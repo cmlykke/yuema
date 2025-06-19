@@ -1,0 +1,22 @@
+
+add index.mjs file to the build folder.
+\WebstormProjects\yuema\build\dev\javascript\yuema\index.mjs
+
+
+Run configuration:
+
+Create a node.js run configuration with these changes:
+
+working directory: ~\WebstormProjects\yuema
+
+File:  build\dev\javascript\yuema\index.mjs
+
+
+In the before launch section, do this:
+-- clikc plus sign
+-- select "run external tool"
+-- create a new one with this info:
+
+program:            gleam
+arguments:          build
+working directory:  $ProjectFileDir$
