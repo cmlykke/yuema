@@ -15,7 +15,6 @@ pub fn parse_conway_files() -> Result(Dict(String, String), String) {
     Ok(content) -> {
       // Compile regex for valid lines: Unicode code point, character, stroke sequence
       let assert Ok(re) = regexp.from_string(
-//    "^U\\+[0-9A-F]{4,6}\\s+([^\\x00-\\x{2E7E}][*^]?)\\s+([0-9|()]+)(?:\\s*.*)?$",
       "^U\\+[0-9A-F]{4,6}\\s+([\\u2E7F-\\u{10FFFF}][*^]?)\\s+([0-9|()]+)(?:\\s*.*)?$",
       )
 
