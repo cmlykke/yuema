@@ -1,0 +1,1 @@
+This folder is for temporary output files. Aside from this info file, it should remain empty.
