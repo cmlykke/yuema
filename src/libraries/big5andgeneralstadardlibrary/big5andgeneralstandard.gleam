@@ -11,6 +11,7 @@ const big5_file_path = "./src/resources/other/Big5_wikilink.txt"
 const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_generalstandard2013_8105.txt"
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 const sinica_20769 = "./src/resources/other/Taiwan_CKIP98-01_20769.csv"
+const taiwanlesscommon_6343 = "./src/resources/other/github_ButTaiwan_cjktables_edu_standard_2.txt"
 
 pub fn parse_taiwan_20769() -> Result(List(String), String) {
   case regexp.from_string("[\\u{2E80}-\\u{10FFFF}]") {
@@ -108,6 +109,28 @@ fn parse_tzai2006_7984() -> Result(Set(String), String) {
       }
       Error(error) ->
       Error("Failed to read tzai2006 file: " <> simplifile.describe_error(error))
+    }
+    Error(_) -> Error("Failed to compile regex")
+  }
+}
+
+pub fn parse_taiwanlesscommon_6343() -> Result(Set(String), String) {
+  // Compile regex for characters in the Unicode range [\u2E7F-\u{10FFFF}]
+  case regexp.from_string("[\\u2E7F-\\u{10FFFF}]") {
+    Ok(re) ->
+    case simplifile.read(from: taiwanlesscommon_6343) {
+      Ok(generalstandard) -> {
+        // Find all matching characters in the content
+        let characters =
+        regexp.scan(with: re, content: generalstandard)
+        |> list.fold(set.new(), fn(set_acc, match) {
+          set.insert(set_acc, match.content)
+        })
+
+        Ok(characters)
+      }
+      Error(error) ->
+      Error("Failed to read generalstandard file: " <> simplifile.describe_error(error))
     }
     Error(_) -> Error("Failed to compile regex")
   }

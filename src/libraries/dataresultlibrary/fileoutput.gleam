@@ -73,6 +73,17 @@ fn write_to_file(formatted_lines: List(String), outputfilename: String) -> Resul
   }
 }
 
+pub fn write_set_to_characters(result: Result(Set(String), String), outputfilename: String) -> Result(Nil, String) {
+  // Get formatted strings
+  let formatted_lines: List(String) = case result {
+    Error(err) -> ["set failed: " <> err]
+    Ok(content) -> set.to_list(content)
+  }
+
+  // Use helper function to write to file
+  write_to_file(formatted_lines, outputfilename)
+}
+
 pub fn write_code_to_characters_set(result: Result(Dict(String, Set(String)), String), outputfilename: String) -> Result(Nil, String) {
   // Get formatted strings
   let formatted_lines = format_code_to_characters_set(result)

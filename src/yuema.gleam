@@ -30,13 +30,13 @@ pub fn main() -> Nil {
   echo size2
 
   //parse_taiwan_20769()
-  let taiwan_20769 = big5andgeneralstandard.parse_taiwan_20769()
+  let taiwan_6343 = big5andgeneralstandard.parse_taiwanlesscommon_6343()
 
 
   let cangiewithmultiple = cangjielibrary.parse_codes_with_multiple_characters("")
   fileoutput.write_code_to_characters_set(cangiewithmultiple, "cangjieoverlap.txt")
   fileoutput.write_filtered_code_to_characters(cangiewithmultiple, big5andstandard, "cangjieoverlapSet.txt")
-  fileoutput.write_code_to_characters_list(taiwan_20769, "Taiwan20769.txt")
+  fileoutput.write_set_to_characters(taiwan_6343, "Taiwan6343.txt")
 
   // Original print statement
   io.println("Hello from yuema! lykke 222333 xxxx")
