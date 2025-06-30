@@ -1,0 +1,49 @@
+
+
+import libraries/dataresultlibrary/fileoutput
+
+let cangiewithmultiple = cangjielibrary.parse_codes_with_multiple_characters("")
+fileoutput.write_code_to_characters(cangiewithmultiple, "cangjieoverlap.txt")
+fileoutput.write_filtered_code_to_characters(cangiewithmultiple, big5andstandard, "cangjieoverlapSet.txt")
+
+
+
+
+
+pub fn write_filtered_code_to_characters(
+result: Result(Dict(String, Set(String)), String),
+char_set: Result(Set(String), String),
+outputfilename: String
+) -> Result(Nil, String) {
+  // Handle the set result
+  case char_set {
+    Error(err) -> Error("Invalid character set: " <> err)
+    Ok(valid_chars) -> {
+      // Filter the dictionary based on the set
+      let filtered_lines = case result {
+        Error(err) -> Error("Invalid dictionary: " <> err)
+        Ok(dict) -> {
+          dict
+          |> dict.to_list
+          |> list.filter(fn(pair) {
+            let chars = pair.1 // Set of characters
+            set.to_list(chars)
+            |> list.any(fn(char) { set.contains(valid_chars, char) })
+          })
+          |> list.map(fn(pair) {
+            let code = pair.0
+            let chars = pair.1
+            code <> ": " <> string.join(set.to_list(chars), with: ", ")
+          })
+          |> Ok
+        }
+      }
+
+      // Write filtered lines using helper function
+      case filtered_lines {
+        Ok(lines) -> write_to_file(lines, outputfilename)
+        Error(err) -> Error(err)
+      }
+    }
+  }
+}

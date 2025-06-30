@@ -3,6 +3,8 @@ import gleam/dict
 import gleam/result
 import gleam/set
 import libraries/conwaylibrary/conwaylibrary
+import libraries/cangjielibrary/cangjielibrary
+import libraries/dataresultlibrary/fileoutput
 import libraries/big5andgeneralstadardlibrary/big5andgeneralstandard
 
 pub fn main() -> Nil {
@@ -17,7 +19,7 @@ pub fn main() -> Nil {
   }
   echo size
 
-  let big5andstandard = big5andgeneralstandard.parse_big5andgeneralstand_16496()
+  let big5andstandard = big5andgeneralstandard.parse_tzai7984andgeneralstandard_11825()
   let size2 = case result.map(big5andstandard, set.size) {
     Ok(size) -> size
     Error(err) -> {
@@ -27,6 +29,14 @@ pub fn main() -> Nil {
   }
   echo size2
 
+  //parse_taiwan_20769()
+  let taiwan_20769 = big5andgeneralstandard.parse_taiwan_20769()
+
+
+  let cangiewithmultiple = cangjielibrary.parse_codes_with_multiple_characters("")
+  fileoutput.write_code_to_characters_set(cangiewithmultiple, "cangjieoverlap.txt")
+  fileoutput.write_filtered_code_to_characters(cangiewithmultiple, big5andstandard, "cangjieoverlapSet.txt")
+  fileoutput.write_code_to_characters_list(taiwan_20769, "Taiwan20769.txt")
 
   // Original print statement
   io.println("Hello from yuema! lykke 222333 xxxx")
