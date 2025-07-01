@@ -13,28 +13,118 @@ const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_gener
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 const sinica_20769 = "./src/resources/other/Taiwan_CKIP98-01_20769.csv"
 const taiwanlesscommon_6343 = "./src/resources/other/github_ButTaiwan_cjktables_edu_standard_2.txt"
+const junda9933 = "./src/resources/other/Junda2005.txt"//Junda2005.txt
+
+// i know what simplified character i want to support. it should be the
+// 8105 general standard chinese character used in china.
+// the traditional characters i want to support i guess should just be the first 8000 in tzai
+// the traditional list i want to return should therefore just be the first 8000 tzai characters.
+
+
+//pub fn charactersToSupport() -> {
+
+//}
+
 
 
 // Main function, returning the lesscommon set
 pub fn taiwanlessusedmissingfromtzai() -> Set(String) {
   // Parse both files
   let tzai_set: Set(String) = parse_file_to_set(tzai2006_file_path,"[\\u{2E80}-\\u{10FFFF}]")
+  let tzai_list: List(String) = parse_file_to_list(tzai2006_file_path, "[\\u{2E80}-\\u{10FFFF}]")
+  let junda_set: Set(String) = parse_file_to_set(junda9933,"[\\u{2E80}-\\u{10FFFF}]")
+  let junda_list: List(String) = parse_file_to_list(junda9933, "[\\u{2E80}-\\u{10FFFF}]")
+  let general_set: Set(String) = parse_file_to_set(generalstandard_file_path,"[\\u{2E80}-\\u{10FFFF}]")
+  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "[\\u{2E80}-\\u{10FFFF}]")
   let lesscommon_set: Set(String) = parse_file_to_set(taiwanlesscommon_6343, "[\\u{2E80}-\\u{10FFFF}]")
+
 
   // Print set sizes (optional, could be moved to caller)
   print_set_size("Tzai2006", tzai_set)
+  print_list_size("Tzai2006", tzai_list)
+  print_set_size("general_set", general_set)
+  print_list_size("general_list", general_list)
   print_set_size("TaiwanLessCommon", lesscommon_set)
 
   let lesscommon_not_in_tzai: Set(String) = set.difference(lesscommon_set, tzai_set)
   let tzai_not_in_lesscommon: Set(String) = set.difference(tzai_set, lesscommon_set)
+  let shared_set_tzailesscommon: Set(String) = set.intersection(lesscommon_set, tzai_set)
+  let shared_set_tzaigeneralstandard: Set(String) = set.intersection(general_set, tzai_set)
+  let presumed_common_characters_tzaigeneralstandard: List(String) = filter_prefix_before_last_testset(tzai_list, shared_set_tzaigeneralstandard)
+
 
   print_set_size("lesscommon_not_in_tzai", lesscommon_not_in_tzai)
   print_set_size("tzai_not_in_lesscommon", tzai_not_in_lesscommon)
-
+  print_set_size("shared_set_tzailesscommon", shared_set_tzailesscommon)
+  print_set_size("shared_set_tzaigeneralstandard", shared_set_tzaigeneralstandard)
+  print_list_size("presumed_common_characters_tzaigeneralstandard: ", presumed_common_characters_tzaigeneralstandard)
 
 
   // Return lesscommon_set as per original code
   lesscommon_set
+}
+
+
+fn filter_limited_prefix(masterlist: List(String), testset: Set(String), limit: Int) -> List(String) {
+  let #(result, last_index) = masterlist
+  |> list.index_fold(#([], 0), fn(acc, item, index) {
+    let #(result_acc, _) = acc
+    case list.length(result_acc) >= limit || set.contains(testset, item) {
+      True -> acc
+      False -> #([item, ..result_acc], index + 1)
+    }
+  })
+
+  io.println("Reached masterlist index: " <> string.inspect(last_index))
+  list.reverse(result)
+}
+
+
+fn filter_prefix_before_last_testset(masterlist: List(String), testset: Set(String)) -> List(String) {
+  // Fold over the list, tracking the result and whether we've seen the last testset element
+  let #(result, last_testset_index) = masterlist
+  |> list.index_fold(#([], -1), fn(acc, item, index) {
+    let #(list_acc, last_idx) = acc
+    case set.contains(testset, item) {
+      True -> #(list_acc, index)
+      False -> #([item, ..list_acc], last_idx)
+    }
+  })
+
+  // Take elements up to the last testset index
+  masterlist
+  |> list.take(last_testset_index)
+}
+
+fn parse_file_to_list(file_path: String, han_regex: String) -> List(String) {
+  // Compile the regex
+  let reg = case regexp.from_string(han_regex) {
+    Ok(reg) -> reg
+    Error(_) -> panic as "Failed to compile regex for CJK characters"
+  }
+
+  // Read file content
+  let content = case simplifile.read(file_path) {
+    Ok(content) -> content
+    Error(e) -> panic as "Failed to read file " <> file_path <> ": " <> simplifile.describe_error(e)
+  }
+
+  // Process lines, accumulating matches in a list and tracking seen matches in a set
+  let #(result_list, seen_set) = content
+  |> string.split("\n")
+  |> list.fold(#([], set.new()), fn(acc, line) {
+    let #(list_acc, set_acc) = acc
+    regexp.scan(with: reg, content: line)
+    |> list.fold(#(list_acc, set_acc), fn(inner_acc, match) {
+      let #(inner_list, inner_set) = inner_acc
+      case set.contains(inner_set, match.content) {
+        True -> #(inner_list, inner_set)
+        False -> #([match.content, ..inner_list], set.insert(inner_set, match.content))
+      }
+    })
+  })
+
+  result_list
 }
 
 fn parse_file_to_set(file_path: String, han_regex: String) -> Set(String) {
@@ -77,6 +167,11 @@ fn parse_file_to_set(file_path: String, han_regex: String) -> Set(String) {
 fn print_set_size(label: String, set: Set(String)) {
   io.println(label <> " set size: " <> int.to_string(set.size(set)))
 }
+
+fn print_list_size(label: String, list: List(String)) {
+  io.println(label <> " list size: " <> int.to_string(list.length(list)))
+}
+
 
 pub fn parse_taiwan_20769() -> Result(List(String), String) {
   case regexp.from_string("[\\u{2E80}-\\u{10FFFF}]") {
