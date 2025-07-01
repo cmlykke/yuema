@@ -1,26 +1,28 @@
 import gleam/dict.{type Dict}
-import gleam/set.{type Set}
+import gleam/list
 
 pub type CharacterCollection {
   StringListTrad(List(String))
   StringListSimp(List(String))
-  StringDictTrad(Dict(String, String))
-  StringDictSimp(Dict(String, String))
-  StringSetTrad(Set(String))
-  StringSetSimp(Set(String))
-  StringSetTotal(Set(String))
+  StringDictTrad(Dict(String, Int))
+  StringDictSimp(Dict(String, Int))
+  StringSetTrad(Dict(String, Bool))
+  StringSetSimp(Dict(String, Bool))
+  StringSetTotal(Dict(String, Bool))
 }
 
 
 
-//pub fn create_collection() -> Dict(String, TargetCharacterCollection) {
-//  let string_list = ["apple", "banana", "cherry"]
-//  let string_dict = dict.from_list([#("name", "Alice"), #("city", "Wonderland")])
-//  let string_set = dict.from_list([#("item1", True), #("item2", True)])
+pub fn get_size(collection: Result(CharacterCollection, Nil)) -> Int {
+  case collection {
+    Ok(StringListSimp(list)) -> list.length(list)
+    Ok(StringListTrad(list)) -> list.length(list)
+    Ok(StringDictSimp(dict)) -> dict.size(dict)
+    Ok(StringDictTrad(dict)) -> dict.size(dict)
+    Ok(StringSetSimp(dict)) -> dict.size(dict)
+    Ok(StringSetTrad(dict)) -> dict.size(dict)
+    Ok(StringSetTotal(dict)) -> dict.size(dict)
+    Error(Nil) -> 0 // Default size for missing collection
+  }
+}
 
-//  dict.from_list([
-//  #("list", StringList(string_list)),
-//  #("dict", StringDict(string_dict)),
-//  #("set", StringSet(string_set)),
-//  ])
-//}

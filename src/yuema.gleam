@@ -1,11 +1,13 @@
 import gleam/io
 import gleam/dict
+import gleam/list
+import gleam/int
 import gleam/result
-import gleam/set
 import libraries/conwaylibrary/conwaylibrary
-import libraries/cangjielibrary/cangjielibrary
-import libraries/dataresultlibrary/fileoutput
 import libraries/big5andgeneralstadardlibrary/big5andgeneralstandard
+import libraries/util/utilcollections
+import simplifile
+import gleam/string
 
 pub fn main() -> Nil {
   // Execute parse_conway_files and save the result to a variable
@@ -17,29 +19,37 @@ pub fn main() -> Nil {
       0 // Return 0 as a fallback for the error case
     }
   }
-  echo size
+  io.println("Cangjie dict size: " <> int.to_string(size))
 
-  let big5andstandard = big5andgeneralstandard.parse_tzai7984andgeneralstandard_11825()
-  let size2 = case result.map(big5andstandard, set.size) {
-    Ok(size) -> size
-    Error(err) -> {
-      io.println("Error parsing Conway files: " <> err)
-      0 // Return 0 as a fallback for the error case
-    }
+  let collections = big5andgeneralstandard.characters_to_support()
+
+  // Print size for simp_list using get_size
+  io.println("StringListTrad has size: " <> int.to_string(utilcollections.get_size(dict.get(collections, "trad_list")),),)
+  io.println("StringListSimp has size: " <> int.to_string(utilcollections.get_size(dict.get(collections, "simp_list")),),)
+  io.println("StringDictTrad has size: " <> int.to_string(utilcollections.get_size(dict.get(collections, "trad_dict")),),)
+  io.println("StringDictSimp has size: " <> int.to_string(utilcollections.get_size(dict.get(collections, "simp_dict")),),)
+  io.println("StringSetTrad has size: " <> int.to_string(utilcollections.get_size(dict.get(collections, "trad_set")),),)
+  io.println("StringSetSimp has size: " <> int.to_string(utilcollections.get_size(dict.get(collections, "simp_set")),),)
+  io.println("StringSetTotal has size: " <> int.to_string(utilcollections.get_size(dict.get(collections, "total_set")),),)
+
+
+  let trad8000: List(String) = case result.unwrap(dict.get(collections, "trad_list"), utilcollections.StringListTrad([])) {
+    utilcollections.StringListTrad(list) -> list
+    _ -> []
   }
-  echo size2
 
-  //parse_taiwan_20769()
-  let taiwan_6343 = big5andgeneralstandard.parse_taiwanlesscommon_6343()
-  let lesscommonandtzai = big5andgeneralstandard.taiwanlessusedmissingfromtzai()
-
-
-  let cangiewithmultiple = cangjielibrary.parse_codes_with_multiple_characters("")
-  fileoutput.write_code_to_characters_set(cangiewithmultiple, "cangjieoverlap.txt")
-  fileoutput.write_filtered_code_to_characters(cangiewithmultiple, big5andstandard, "cangjieoverlapSet.txt")
-  fileoutput.write_set_to_characters(taiwan_6343, "Taiwan6343.txt")
+  let path = "C:/Users/CMLyk/WebstormProjects/yuema/src/outputfiles/trad8000.txt"
+  case write_list_to_file(path, trad8000) {
+    Ok(_) -> io.println("File written successfully")
+    Error(msg) -> io.println("Error writing file: " <> msg)
+  }
 
   // Original print statement
   io.println("Hello from yuema! lykke 222333 xxxx")
 }
 
+pub fn write_list_to_file(path: String, list: List(String)) -> Result(Nil, String) {
+  let content = string.join(list, "\n")
+  simplifile.write(to: path, contents: content)
+  |> result.map_error(fn(error) { simplifile.describe_error(error) })
+}
