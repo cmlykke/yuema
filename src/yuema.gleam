@@ -31,6 +31,7 @@ pub fn main() -> Nil {
 
   //parse_taiwan_20769()
   let taiwan_6343 = big5andgeneralstandard.parse_taiwanlesscommon_6343()
+  let lesscommonandtzai = big5andgeneralstandard.taiwanlessusedmissingfromtzai()
 
 
   let cangiewithmultiple = cangjielibrary.parse_codes_with_multiple_characters("")

@@ -5,6 +5,7 @@ import simplifile
 import gleam/string
 import gleam/io // Added for io.println
 import gleam/int // Added for int.to_string
+import gleam/result
 
 // Paths to the text files
 const big5_file_path = "./src/resources/other/Big5_wikilink.txt"
@@ -12,6 +13,70 @@ const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_gener
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 const sinica_20769 = "./src/resources/other/Taiwan_CKIP98-01_20769.csv"
 const taiwanlesscommon_6343 = "./src/resources/other/github_ButTaiwan_cjktables_edu_standard_2.txt"
+
+
+// Main function, returning the lesscommon set
+pub fn taiwanlessusedmissingfromtzai() -> Set(String) {
+  // Parse both files
+  let tzai_set: Set(String) = parse_file_to_set(tzai2006_file_path,"[\\u{2E80}-\\u{10FFFF}]")
+  let lesscommon_set: Set(String) = parse_file_to_set(taiwanlesscommon_6343, "[\\u{2E80}-\\u{10FFFF}]")
+
+  // Print set sizes (optional, could be moved to caller)
+  print_set_size("Tzai2006", tzai_set)
+  print_set_size("TaiwanLessCommon", lesscommon_set)
+
+  let lesscommon_not_in_tzai: Set(String) = set.difference(lesscommon_set, tzai_set)
+  let tzai_not_in_lesscommon: Set(String) = set.difference(tzai_set, lesscommon_set)
+
+  print_set_size("lesscommon_not_in_tzai", lesscommon_not_in_tzai)
+  print_set_size("tzai_not_in_lesscommon", tzai_not_in_lesscommon)
+
+
+
+  // Return lesscommon_set as per original code
+  lesscommon_set
+}
+
+fn parse_file_to_set(file_path: String, han_regex: String) -> Set(String) {
+  let reg = case regexp.from_string(han_regex) {
+    Ok(reg) -> reg
+    Error(_) -> panic as "Failed to compile regex for CJK characters"
+  }
+
+  let content = case simplifile.read(file_path) {
+    Ok(content) -> content
+    Error(e) -> panic as "Failed to read file " <> file_path <> ": " <> simplifile.describe_error(e)
+  }
+
+  regexp.scan(with: reg, content: content)
+  |> list.fold(set.new(), fn(set_acc, match) {
+    set.insert(set_acc, match.content)
+  })
+}
+
+// Helper function to parse a file into a Set(String)
+// Helper function to parse a file into a Set(String)
+//fn parse_file_to_set(file_path: String) -> Set(String) {
+//  let han_regex = case regexp.from_string("[\\u{2E80}-\\u{10FFFF}]") {
+//    Ok(regex) -> regex
+//    Error(_) -> panic as "Failed to compile regex for CJK characters"
+//  }
+
+//  let content = case simplifile.read(file_path) {
+//    Ok(content) -> content
+//    Error(e) -> panic as "Failed to read file " <> file_path <> ": " <> simplifile.describe_error(e)
+//  }
+
+//  regexp.scan(with: han_regex, content: content)
+//  |> list.fold(set.new(), fn(set_acc, match) {
+//    set.insert(set_acc, match.content)
+//  })
+//}
+
+// Helper function to print set size
+fn print_set_size(label: String, set: Set(String)) {
+  io.println(label <> " set size: " <> int.to_string(set.size(set)))
+}
 
 pub fn parse_taiwan_20769() -> Result(List(String), String) {
   case regexp.from_string("[\\u{2E80}-\\u{10FFFF}]") {
