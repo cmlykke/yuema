@@ -3,6 +3,7 @@ import gleam/list
 
 pub type CharacterCollection {
   Collections(
+  simp_list_stroke: List(String),
   simp_list: List(String),
   simp_set: Dict(String, Bool),
   simp_dict: Dict(String, Int),

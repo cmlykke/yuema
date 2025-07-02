@@ -34,10 +34,10 @@ pub fn main() -> Nil {
   io.println("StringSetTotal has size: " <> int.to_string(dict.size(collections.total_set)))
 
 
-  let trad8000: List(String) = collections.trad_list
+  let simp_list: List(String) = collections.simp_list
 
-  let path = "C:/Users/CMLyk/WebstormProjects/yuema/src/outputfiles/trad8000.txt"
-  case write_list_to_file(path, trad8000) {
+  let path = "C:/Users/CMLyk/WebstormProjects/yuema/src/outputfiles/simp8105.txt"
+  case write_list_to_file(path, simp_list) {
     Ok(_) -> io.println("File written successfully")
     Error(msg) -> io.println("Error writing file: " <> msg)
   }

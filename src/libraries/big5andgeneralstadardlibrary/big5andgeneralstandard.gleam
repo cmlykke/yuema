@@ -33,16 +33,23 @@ pub fn characters_to_support() -> CharacterCollection {
 
   //junda list
   let jundacomplete: List(String) = parse_file_to_list(junda9933,"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
-  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
+  let general_list_raw: List(String) = parse_file_to_list(generalstandard_file_path, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
+
+  let intersec: Set(String) = intersection(general_list_raw, jundacomplete)
+  let junda_no_geneal: List(String) = list.filter(jundacomplete, fn(item) { set.contains(intersec, item) })
+  let general_no_junda: List(String) = list.filter(general_list_raw, fn(item) { !set.contains(intersec, item) })
+  let general_list: List(String) = list.append(junda_no_geneal, general_no_junda)
+  let combiset: Set(String) = set.from_list(general_list)
+
   let general_set_raw: Dict(String, Bool) = list_to_set(general_list)
   let jundageneraldiff: List(String) = difference_set(jundacomplete, general_set_raw)
-  io.println("jundacomplete: " <> int.to_string(list.length(jundacomplete)))
-  io.println("general_set_raw: " <> int.to_string(dict.size(general_set_raw)))
-  io.println("jundageneraldiff: " <> int.to_string(list.length(jundageneraldiff)))
+  //io.println("generallist_jundageneral_inorder: " <> int.to_string(list.length(general_list)))
+  //io.println("general_set_raw: " <> int.to_string(dict.size(general_set_raw)))
+  //io.println("jundageneraldiff: " <> int.to_string(list.length(jundageneraldiff)))
 
 
 
-  let general_set: Dict(String, Bool) = list_to_set(general_list)
+  let general_set: Dict(String, Bool) = list_to_set(general_list_raw)
   let general_dict: Dict(String, Int) = list_to_indexed_dict(general_list)
   let trad_list_raw: List(String) = parse_file_to_list(tzai2006_file_path,"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
   let trad_list: List(String) = list.take(trad_list_raw, 8000)
@@ -53,6 +60,7 @@ pub fn characters_to_support() -> CharacterCollection {
 
 
   Collections(
+  simp_list_stroke: general_list_raw,
   simp_list: general_list,
   simp_set: general_set,
   simp_dict: general_dict,
@@ -64,6 +72,11 @@ pub fn characters_to_support() -> CharacterCollection {
 
 }
 
+pub fn intersection(list1: List(String), list2: List(String)) -> Set(String) {
+  let set1 = set.from_list(list1)
+  let set2 = set.from_list(list2)
+  set.intersection(set1, set2)
+}
 
 fn parse_file_to_list(file_path: String, regex_pattern: String) -> List(String) {
   let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
