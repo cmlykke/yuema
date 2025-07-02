@@ -18,19 +18,22 @@ const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_gener
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 
 pub fn jundacomplete() -> List(String) {
-  parse_file_to_list(junda9933, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
-}
+  parse_file_to_list(junda9933, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
+}                            //"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])"
 
 pub fn general_set_raw() -> Dict(String, Bool) {
-  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
+  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
   list_to_set(general_list)
 }
+//(?<=^[^\u{2E80}-\u{10FFFF}])([\u{2E80}-\u{10FFFF}]).
+
+// "^.*?([\\u{2E80}-\\u{10FFFF}]).*"
 
 pub fn characters_to_support() -> CharacterCollection {
 
   //junda list
-  let jundacomplete: List(String) = parse_file_to_list(junda9933, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
-  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
+  let jundacomplete: List(String) = parse_file_to_list(junda9933,"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
+  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
   let general_set_raw: Dict(String, Bool) = list_to_set(general_list)
   let jundageneraldiff: List(String) = difference_set(jundacomplete, general_set_raw)
   io.println("jundacomplete: " <> int.to_string(list.length(jundacomplete)))
@@ -41,7 +44,7 @@ pub fn characters_to_support() -> CharacterCollection {
 
   let general_set: Dict(String, Bool) = list_to_set(general_list)
   let general_dict: Dict(String, Int) = list_to_indexed_dict(general_list)
-  let trad_list_raw: List(String) = parse_file_to_list(tzai2006_file_path, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
+  let trad_list_raw: List(String) = parse_file_to_list(tzai2006_file_path,"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
   let trad_list: List(String) = list.take(trad_list_raw, 8000)
   let trad_set: Dict(String, Bool) = list_to_set(trad_list)
   let trad_dict: Dict(String, Int) = list_to_indexed_dict(trad_list)

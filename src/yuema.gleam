@@ -45,10 +45,6 @@ pub fn main() -> Nil {
   let jun: List(String) = big5andgeneralstandard.jundacomplete()
   let genset: Dict(String, Bool) = big5andgeneralstandard.general_set_raw()
   let diffset = difference_set(jun, genset)
-  io.println("jund: " <> int.to_string(list.length(jun)))
-  print_first_five(jun)
-  io.println("genset: " <> int.to_string(dict.size(genset)))
-  print_first_five_dict(genset)
   io.println("diffset: " <> int.to_string(list.length(diffset)))
 
 
