@@ -18,19 +18,19 @@ const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_gener
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 
 pub fn jundacomplete() -> List(String) {
-  parse_file_to_list(junda9933, "[\\u{2E80}-\\u{10FFFF}]")
+  parse_file_to_list(junda9933, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
 }
 
 pub fn general_set_raw() -> Dict(String, Bool) {
-  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "[\\u{2E80}-\\u{10FFFF}]")
+  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
   list_to_set(general_list)
 }
 
 pub fn characters_to_support() -> CharacterCollection {
 
   //junda list
-  let jundacomplete: List(String) = parse_file_to_list(junda9933, "[\\u{2E80}-\\u{10FFFF}]")
-  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "[\\u{2E80}-\\u{10FFFF}]")
+  let jundacomplete: List(String) = parse_file_to_list(junda9933, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
+  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
   let general_set_raw: Dict(String, Bool) = list_to_set(general_list)
   let jundageneraldiff: List(String) = difference_set(jundacomplete, general_set_raw)
   io.println("jundacomplete: " <> int.to_string(list.length(jundacomplete)))
@@ -41,7 +41,7 @@ pub fn characters_to_support() -> CharacterCollection {
 
   let general_set: Dict(String, Bool) = list_to_set(general_list)
   let general_dict: Dict(String, Int) = list_to_indexed_dict(general_list)
-  let trad_list_raw: List(String) = parse_file_to_list(tzai2006_file_path, "[\\u{2E80}-\\u{10FFFF}]")
+  let trad_list_raw: List(String) = parse_file_to_list(tzai2006_file_path, "^.*?([\\u{2E80}-\\u{10FFFF}]).*")
   let trad_list: List(String) = list.take(trad_list_raw, 8000)
   let trad_set: Dict(String, Bool) = list_to_set(trad_list)
   let trad_dict: Dict(String, Int) = list_to_indexed_dict(trad_list)
@@ -62,18 +62,40 @@ pub fn characters_to_support() -> CharacterCollection {
 }
 
 
-
 fn parse_file_to_list(file_path: String, regex_pattern: String) -> List(String) {
   let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
   case simplifile.read(file_path) {
     Ok(content) -> {
       content
-      |> string.to_graphemes
-      |> list.filter(fn(char) { regexp.check(regex, char) })
+      |> string.split("\n")
+      |> list.index_fold(
+      from: [],
+      with: fn(acc, line, index) {
+        let trimmed = string.trim(line)
+        case trimmed == "" {
+          True -> acc
+          False -> {
+            let matches = regexp.scan(regex, trimmed)
+            case matches {
+              [] -> {
+                io.println("No match in " <> file_path <> " at line " <> int.to_string(index + 1) <> ": " <> trimmed)
+                acc
+              }
+              _ -> {
+                let match_contents = list.map(matches, fn(match) { match.content })
+                list.append(acc, match_contents)
+              }
+            }
+          }
+        }
+      }
+      )
     }
     Error(_) -> []
   }
 }
+
+
 
 fn list_to_set(strings: List(String)) -> Dict(String, Bool) {
   strings
