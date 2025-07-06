@@ -17,23 +17,26 @@ const junda9933 = "./src/resources/other/Junda2005.txt"//Junda2005.txt
 const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_generalstandard2013_8105.txt"
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 
+pub fn characterreg() -> regexp.Regexp {
+  let regex_pattern = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
+  let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
+  regex
+}
+
 pub fn jundacomplete() -> List(String) {
-  parse_file_to_list(junda9933, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
-}                            //"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])"
+  parse_file_to_list(junda9933, characterreg())
+}
 
 pub fn general_set_raw() -> Dict(String, Bool) {
-  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
+  let general_list: List(String) = parse_file_to_list(generalstandard_file_path, characterreg())
   list_to_set(general_list)
 }
-//(?<=^[^\u{2E80}-\u{10FFFF}])([\u{2E80}-\u{10FFFF}]).
-
-// "^.*?([\\u{2E80}-\\u{10FFFF}]).*"
 
 pub fn characters_to_support() -> CharacterCollection {
 
   //junda list
-  let jundacomplete: List(String) = parse_file_to_list(junda9933,"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
-  let general_list_raw: List(String) = parse_file_to_list(generalstandard_file_path, "(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
+  let jundacomplete: List(String) = parse_file_to_list(junda9933,characterreg())
+  let general_list_raw: List(String) = parse_file_to_list(generalstandard_file_path, characterreg())
 
   let intersec: Set(String) = intersection(general_list_raw, jundacomplete)
   let junda_no_geneal: List(String) = list.filter(jundacomplete, fn(item) { set.contains(intersec, item) })
@@ -51,7 +54,7 @@ pub fn characters_to_support() -> CharacterCollection {
 
   let general_set: Dict(String, Bool) = list_to_set(general_list_raw)
   let general_dict: Dict(String, Int) = list_to_indexed_dict(general_list)
-  let trad_list_raw: List(String) = parse_file_to_list(tzai2006_file_path,"(?<=^[^\\u{2E80}-\\u{10FFFF}]*)([\\u{2E80}-\\u{10FFFF}])")
+  let trad_list_raw: List(String) = parse_file_to_list(tzai2006_file_path,characterreg())
   let trad_list: List(String) = list.take(trad_list_raw, 8000)
   let trad_set: Dict(String, Bool) = list_to_set(trad_list)
   let trad_dict: Dict(String, Int) = list_to_indexed_dict(trad_list)
@@ -78,8 +81,8 @@ pub fn intersection(list1: List(String), list2: List(String)) -> Set(String) {
   set.intersection(set1, set2)
 }
 
-fn parse_file_to_list(file_path: String, regex_pattern: String) -> List(String) {
-  let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
+fn parse_file_to_list(file_path: String, regex: regexp.Regexp) -> List(String) {
+  //let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
   case simplifile.read(file_path) {
     Ok(content) -> {
       content
