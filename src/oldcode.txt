@@ -1,0 +1,34 @@
+let cangjie_dict = conwaylibrary.parse_conway_files()
+  let size = case result.map(cangjie_dict, dict.size) {
+    Ok(size) -> size
+    Error(err) -> {
+      io.println("Error parsing Conway files: " <> err)
+      0 // Return 0 as a fallback for the error case
+    }
+  }
+  io.println("Cangjie dict size: " <> int.to_string(size))
+
+  let collections: CharacterCollection = big5andgeneralstandard.characters_to_support()
+
+  // Print size for simp_list using get_size
+  io.println("StringListTrad has size: " <> int.to_string(list.length(collections.trad_list)))
+  io.println("StringListSimp has size: " <> int.to_string(list.length(collections.simp_list)))
+  io.println("StringDictTrad has size: " <> int.to_string(dict.size(collections.trad_dict)))
+  io.println("StringDictSimp has size: " <> int.to_string(dict.size(collections.simp_dict)))
+  io.println("StringSetTrad has size: " <> int.to_string(dict.size(collections.trad_set)))
+  io.println("StringSetSimp has size: " <> int.to_string(dict.size(collections.simp_set)))
+  io.println("StringSetTotal has size: " <> int.to_string(dict.size(collections.total_set)))
+
+
+  let simp_list: List(String) = collections.simp_list
+
+  let path = "C:/Users/CMLyk/WebstormProjects/yuema/src/outputfiles/simp8105.txt"
+  case write_list_to_file(path, simp_list) {
+    Ok(_) -> io.println("File written successfully")
+    Error(msg) -> io.println("Error writing file: " <> msg)
+  }
+
+  let jun: List(String) = big5andgeneralstandard.jundacomplete()
+  let genset: Dict(String, Bool) = big5andgeneralstandard.general_set_raw()
+  let diffset = difference_set(jun, genset)
+  io.println("diffset: " <> int.to_string(list.length(diffset)))
