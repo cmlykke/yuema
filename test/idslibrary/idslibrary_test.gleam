@@ -17,16 +17,13 @@ pub fn characters_to_support_test() {
   let manualcollection: Dict(String, String) = idslibrary.personal_ids_map()
   let combined: Dict(String, String) = dict.merge(manualcollection, officialcollection)
 
-  io.println("official ids cound: " <> int.to_string(dict.size(officialcollection)))
-  //list.length(collections.trad_list)
+  //io.println("official ids cound: " <> int.to_string(dict.size(officialcollection)))
   should.equal(dict.size(officialcollection), 88937)
 
-  io.println("manual ids count: " <> int.to_string(dict.size(manualcollection)))
-  //list.length(collections.trad_list)
+  //io.println("manual ids count: " <> int.to_string(dict.size(manualcollection)))
   should.equal(dict.size(manualcollection), 133)
 
-  io.println("combined ids count: " <> int.to_string(dict.size(combined)))
-  //list.length(collections.trad_list)
+  //io.println("combined ids count: " <> int.to_string(dict.size(combined)))
   should.equal(dict.size(combined), 89070)
 
 }

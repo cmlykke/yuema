@@ -15,8 +15,10 @@ pub fn main() {
 pub fn characters_to_support_test() {
   let collection = big5andgeneralstandard.characters_to_support()
 
-  io.println("test first: " <> int.to_string(list.length(collection.trad_list)))
-  //list.length(collections.trad_list)
+  io.println("traditional characters list length: " <> int.to_string(list.length(collection.trad_list)))
   should.equal(list.length(collection.trad_list), 8000)
+
+  io.println("general standard list length: " <> int.to_string(list.length(collection.simp_list)))
+  should.equal(list.length(collection.simp_list), 8114)
 
 }
