@@ -12,9 +12,14 @@ import gleam/int
 
 // Paths to the text files
 const cjkvi_ids = "./src/resources/other/ids.txt"
+const manual_ids = "./src/resources/manuallycreatedfiles/orderedMissingIds.txt"
 
 pub fn cjkvi_ids_map() -> Dict(String, String) {
   parse_file_to_list(cjkvi_ids)
+}
+
+pub fn personal_ids_map() -> Dict(String, String) {
+  parse_file_to_list(manual_ids)
 }
 
 
