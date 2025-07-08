@@ -17,19 +17,23 @@ const junda9933 = "./src/resources/other/Junda2005.txt"//Junda2005.txt
 const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_generalstandard2013_8105.txt"
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 
-pub fn characterreg() -> regexp.Regexp {
+fn characterreg() -> regexp.Regexp {
   let regex_pattern = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
   let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
   regex
 }
 
-pub fn jundacomplete() -> List(String) {
+fn jundacomplete() -> List(String) {
   parse_file_to_list(junda9933, characterreg())
 }
 
-pub fn general_set_raw() -> Dict(String, Bool) {
+fn general_set_raw() -> Dict(String, Bool) {
   let general_list: List(String) = parse_file_to_list(generalstandard_file_path, characterreg())
   list_to_set(general_list)
+}
+
+pub fn generalstandardlist() -> List(String) {
+  parse_file_to_list(generalstandard_file_path, characterreg())
 }
 
 pub fn characters_to_support() -> CharacterCollection {

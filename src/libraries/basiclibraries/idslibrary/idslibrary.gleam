@@ -14,6 +14,12 @@ import gleam/int
 const cjkvi_ids = "./src/resources/other/ids.txt"
 const manual_ids = "./src/resources/manuallycreatedfiles/orderedMissingIds.txt"
 
+pub fn combined_ids_map() -> Dict(String, String) {
+  let officialcollection: Dict(String, String) = cjkvi_ids_map()
+  let manualcollection: Dict(String, String) = personal_ids_map()
+  dict.merge(manualcollection, officialcollection)
+}
+
 pub fn cjkvi_ids_map() -> Dict(String, String) {
   parse_file_to_list(cjkvi_ids)
 }
