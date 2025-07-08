@@ -2,8 +2,8 @@ import gleam/io
 import gleam/list
 import gleam/int
 import gleam/result
-import libraries/conwaylibrary/conwaylibrary
-import libraries/big5andgeneralstadardlibrary/big5andgeneralstandard
+import libraries/basiclibraries/conwaylibrary/conwaylibrary
+import libraries/basiclibraries/big5andgeneralstadardlibrary/big5andgeneralstandard
 import simplifile
 import gleam/string
 import libraries/util/utilcollections.{type CharacterCollection}

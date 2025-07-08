@@ -2,7 +2,7 @@ import gleam/int
 import gleam/io
 import gleeunit
 import gleeunit/should
-import libraries/big5andgeneralstadardlibrary/big5andgeneralstandard
+import libraries/basiclibraries/big5andgeneralstadardlibrary/big5andgeneralstandard
 import libraries/util/utilcollections.{Collections}
 import gleam/dict
 import gleam/list

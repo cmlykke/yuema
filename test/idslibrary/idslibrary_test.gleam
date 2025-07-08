@@ -2,7 +2,7 @@ import gleam/int
 import gleam/io
 import gleeunit
 import gleeunit/should
-import libraries/idslibrary/idslibrary
+import libraries/basiclibraries/idslibrary/idslibrary
 import libraries/util/utilcollections.{Collections}
 import gleam/list
 import gleam/set
