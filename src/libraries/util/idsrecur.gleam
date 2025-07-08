@@ -7,67 +7,68 @@ import gleam/io
 import gleam/regexp
 import gleam/result
 
-// Define the regex for valid characters (U+2FF0 to U+2FFF and U+303E to U+31EF)
+
+// Define regex patterns for valid characters
 const regex_pattern_shapechar: String = "[\\x{2FF0}-\\x{2FFF}\\x{303E}\\x{31EF}]"
 
 const regex_pattern_hanchar: String = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
 
-// Define the opaque type for a string restricted to specific characters
+// Define opaque types
 pub opaque type HanChar {
   HanChar(value: String)
 }
 
-// Constructor: Creates a ShapeString or panics if invalid
-pub fn hanchar_new(input: String) -> HanChar {
-  let assert Ok(regex) = regexp.compile(regex_pattern_hanchar, regexp.Options(case_insensitive: False, multi_line: False))
-  let is_valid = string.to_graphemes(input)
-  |> list.all(fn(char) { regexp.check(regex, char) })
-  let is_exactly_one_char = string.length(input) == 1
-
-  case is_valid && is_exactly_one_char {
-    True -> HanChar(input)
-    False -> {
-      let msg = "Invalid HanChar: input must contain exactly one character in Unicode range [x{80}-x{D7FF} x{E000}-x{10FFFF}] Got: '"
-      <> input
-      <> "'"
-      panic as msg
-    }
-  }
-}
-
-// Accessor: Get the underlying string value
-pub fn hanchar_to_string(restricted: HanChar) -> String {
-  restricted.value
-}
-
-
-//********************** shape ******************************
-
-// Define the opaque type for a string restricted to specific characters
 pub opaque type ShapeChar {
   ShapeChar(value: String)
 }
 
-// Constructor: Creates a ShapeString or panics if invalid
-pub fn shapechar_new(input: String) -> ShapeChar {
-  let assert Ok(regex) = regexp.compile(regex_pattern_shapechar, regexp.Options(case_insensitive: False, multi_line: False))
+// Generic validation and construction function
+fn create_restricted_char(
+input: String,
+regex_pattern: String,
+error_prefix: String,
+constructor: fn(String) -> restricted,
+) -> restricted {
+  let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
   let is_valid = string.to_graphemes(input)
   |> list.all(fn(char) { regexp.check(regex, char) })
   let is_exactly_one_char = string.length(input) == 1
 
   case is_valid && is_exactly_one_char {
-    True -> ShapeChar(input)
+    True -> constructor(input)
     False -> {
-      let msg = "Invalid ShapeString: input must contain exactly one character in Unicode range U+2FF0-U+2FFF or code points U+303E or U+31EF. Got: '"
-      <> input
-      <> "'"
+      let msg = error_prefix <> " Got: '" <> input <> "'"
       panic as msg
     }
   }
 }
 
-// Accessor: Get the underlying string value
-pub fn shapechar_to_string(restricted: ShapeChar) -> String {
+// HanChar constructor
+pub fn hanchar_new(input: String) -> HanChar {
+  create_restricted_char(
+  input,
+  regex_pattern_hanchar,
+  "Invalid HanChar: input must contain exactly one character in Unicode range [x{80}-x{D7FF} x{E000}-x{10FFFF}].",
+  HanChar,
+  )
+}
+
+// HanChar accessor
+pub fn hanchar_to_string(restricted: HanChar) -> String {
   restricted.value
 }
 
+// ShapeChar constructor
+pub fn shapechar_new(input: String) -> ShapeChar {
+  create_restricted_char(
+  input,
+  regex_pattern_shapechar,
+  "Invalid ShapeChar: input must contain exactly one character in Unicode range U+2FF0-U+2FFF or code points U+303E or U+31EF.",
+  ShapeChar,
+  )
+}
+
+// ShapeChar accessor
+pub fn shapechar_to_string(restricted: ShapeChar) -> String {
+  restricted.value
+}
