@@ -8,6 +8,68 @@ import gleam/regexp
 import gleam/result
 
 
+//******************************* Idsrecur  ***********************************
+
+// Assuming HanChar and ShapeChar are defined in the previous code
+pub opaque type Idsrecur {
+    Idsrecur(
+  shape_char: Option(ShapeChar),
+  han_char: Option(HanChar),
+  children: List(Option(Idsrecur)),
+  )
+}
+
+// Constructor for Idsrecur
+pub fn idsrecur_new(
+shape_char: Option(ShapeChar),
+han_char: Option(HanChar),
+children: List(Option(Idsrecur)),
+) -> Idsrecur {
+Idsrecur(shape_char, han_char, children)
+}
+
+// Accessor for shape_char
+pub fn idsrecur_get_shape_char(ids: Idsrecur) -> Option(ShapeChar) {
+  ids.shape_char
+}
+
+// Accessor for han_char
+pub fn idsrecur_get_han_char(ids: Idsrecur) -> Option(HanChar) {
+  ids.han_char
+}
+
+// Accessor for children
+pub fn idsrecur_get_children(ids: Idsrecur) -> List(Option(Idsrecur)) {
+  ids.children
+}
+
+// Convert Idsrecur to string representation
+pub fn idsrecur_to_string(ids: Idsrecur) -> String {
+  let shape_str = case idsrecur_get_shape_char(ids) {
+    Some(shape) -> shapechar_to_string(shape)
+    None -> ""
+  }
+
+  let han_str = case idsrecur_get_han_char(ids) {
+    Some(han) -> hanchar_to_string(han)
+    None -> ""
+  }
+
+  let children_str = idsrecur_get_children(ids)
+  |> list.map(fn(child_opt) {
+    case child_opt {
+      Some(child) -> idsrecur_to_string(child)
+      None -> ""
+    }
+  })
+  |> string.join("")
+
+  "(" <> shape_str <> han_str <> "[" <> children_str <> "])"
+}
+
+
+//******************************* ShapeChar and HanChar  ***********************************
+
 // Define regex patterns for valid characters
 const regex_pattern_shapechar: String = "[\\x{2FF0}-\\x{2FFF}\\x{303E}\\x{31EF}]"
 

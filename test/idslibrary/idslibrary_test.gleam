@@ -9,6 +9,9 @@ import libraries/util/utilcollections.{type CharacterCollection, Collections}
 import gleam/list
 import gleam/set
 import gleam/dict.{type Dict}
+import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
+
+
 
 pub fn main() {
   gleeunit.main()
@@ -19,9 +22,13 @@ pub fn nestedids_test() {
   //let big5andgs: CharacterCollection = big5andgeneralstandard.characters_to_support()
   let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
-  let recur = idsrecursion.idsrecursion("ABC", combinedids)
 
-  io.println("done: ")
+  let res: Idsrecur = idsrecursion.idsrecursion("𠯀", combinedids)
+  let res2: String = idsrecur.idsrecur_to_string(res)
+
+  io.println("done: " <> res2)
+  should.equal(res2, "(⿰[(口[])(川[])])")
+
 }
 
 

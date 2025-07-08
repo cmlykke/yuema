@@ -8,10 +8,34 @@ import libraries/util/utilcollections.{type CharacterCollection, Collections}
 import gleam/io
 import gleam/set.{type Set}
 import gleam/int
+import gleam/option.{type Option, None, Some}
+import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 
-pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Dict(String, String) {
+//C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\util\idsrecur.gleam
 
-
-
-  ids
+pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
+  case dict.get(ids, char) {
+    Ok(val) if val != char -> {
+      let graphemes = string.to_graphemes(val)
+      case list.first(graphemes) {
+        Ok(shape_str) -> {
+          let shape = idsrecur.shapechar_new(shape_str)
+          let components = list.drop(graphemes, 1)
+          let children = list.map(components, fn(c) { Some(idsrecursion(c, ids)) })
+          idsrecur.idsrecur_new(Some(shape), None, children)
+        }
+        Error(_) -> {
+          let han = idsrecur.hanchar_new(char)
+          idsrecur.idsrecur_new(None, Some(han), [])
+        }
+      }
+    }
+    _ -> {
+      let han = idsrecur.hanchar_new(char)
+      idsrecur.idsrecur_new(None, Some(han), [])
+    }
+  }
 }
+
+
+
