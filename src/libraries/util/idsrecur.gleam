@@ -15,6 +15,7 @@ pub opaque type Idsrecur {
     Idsrecur(
   shape_char: Option(ShapeChar),
   han_char: Option(HanChar),
+  previus_han_char: Option(HanChar),
   children: List(Option(Idsrecur)),
   )
 }
@@ -23,9 +24,10 @@ pub opaque type Idsrecur {
 pub fn idsrecur_new(
 shape_char: Option(ShapeChar),
 han_char: Option(HanChar),
+previus_han_char: Option(HanChar),
 children: List(Option(Idsrecur)),
 ) -> Idsrecur {
-Idsrecur(shape_char, han_char, children)
+Idsrecur(shape_char, han_char, previus_han_char, children)
 }
 
 // Accessor for shape_char
@@ -36,6 +38,10 @@ pub fn idsrecur_get_shape_char(ids: Idsrecur) -> Option(ShapeChar) {
 // Accessor for han_char
 pub fn idsrecur_get_han_char(ids: Idsrecur) -> Option(HanChar) {
   ids.han_char
+}
+
+pub fn idsrecur_get_previus_han_char(ids: Idsrecur) -> Option(HanChar) {
+  ids.previus_han_char
 }
 
 // Accessor for children
@@ -55,6 +61,11 @@ pub fn idsrecur_to_string(ids: Idsrecur) -> String {
     None -> ""
   }
 
+  let previus_han_str = case idsrecur_get_previus_han_char(ids) {
+    Some(han) -> hanchar_to_string(han)
+    None -> ""
+  }
+
   let children_str = idsrecur_get_children(ids)
   |> list.map(fn(child_opt) {
     case child_opt {
@@ -64,7 +75,7 @@ pub fn idsrecur_to_string(ids: Idsrecur) -> String {
   })
   |> string.join("")
 
-  "(" <> shape_str <> han_str <> "[" <> children_str <> "])"
+  "(" <> "{" <> previus_han_str <>"}" <> shape_str <> han_str <> "[" <> children_str <> "])"
 }
 
 

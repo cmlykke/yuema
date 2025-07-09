@@ -44,7 +44,7 @@ fn process_strokes(generalstandardstroke: List(String)) -> List(String) {
 
   list.map(generalstandardstroke, fn(stroke) {
     let eachids: Idsrecur = idsandconway.idsrecursion(stroke, combinedids)
-    stroke <> " " <> idsrecur.idsrecur_to_string(eachids)
+    idsrecur.idsrecur_to_string(eachids)
   })
 }
 

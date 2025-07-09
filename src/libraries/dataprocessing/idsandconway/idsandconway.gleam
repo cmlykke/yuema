@@ -20,23 +20,24 @@ pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
       case list.first(graphemes) {
         Ok(shape_str) -> {
           let shape = idsrecur.shapechar_new(shape_str)
+          let previus_han_har = idsrecur.hanchar_new(char)
           let components = list.drop(graphemes, 1)
           let filtered_components = list.filter(components, fn(c) {
             string.to_graphemes(c)
             |> list.all(fn(g) { string.byte_size(g) > 1 })
           })
           let children = list.map(filtered_components, fn(c) { Some(idsrecursion(c, ids)) })
-          idsrecur.idsrecur_new(Some(shape), None, children)
+          idsrecur.idsrecur_new(Some(shape), None, Some(previus_han_har), children)
         }
         Error(_) -> {
           let han = idsrecur.hanchar_new(char)
-          idsrecur.idsrecur_new(None, Some(han), [])
+          idsrecur.idsrecur_new(None, Some(han), None, [])
         }
       }
     }
     _ -> {
       let han = idsrecur.hanchar_new(char)
-      idsrecur.idsrecur_new(None, Some(han), [])
+      idsrecur.idsrecur_new(None, Some(han), None, [])
     }
   }
 }
