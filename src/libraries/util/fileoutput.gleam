@@ -35,7 +35,7 @@ pub fn format_code_to_characters_list(result: Result(List(String), String)) -> L
 }
 
 // Helper function to handle file writing logic
-fn write_to_file(formatted_lines: List(String), outputfilename: String) -> Result(Nil, String) {
+pub fn write_to_file(formatted_lines: List(String), outputfilename: String) -> Result(Nil, String) {
   let output_dir = "C:\\Users\\CMLyk\\WebstormProjects\\yuema\\src\\outputfiles"
 
   // Ensure filename has .txt extension
