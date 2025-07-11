@@ -69,7 +69,10 @@ pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
         idsrecur.idsrecur_get_han_char(inner),
         Some(idsrecur.hanchar_new(char)),
         idsrecur.idsrecur_get_children(inner))
-        _ -> panic as "Extra characters after parsing IDS sequence"
+        _ -> {
+          let message ="Extra characters after parsing IDS sequence: " <> char
+          panic as message
+        }
       }
     }
     _ -> {
