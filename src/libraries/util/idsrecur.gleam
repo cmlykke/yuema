@@ -131,6 +131,11 @@ pub fn hanchar_to_string(restricted: HanChar) -> String {
   restricted.value
 }
 
+pub fn hanchar_to_string_option(opt: Option(HanChar)) -> String {
+  option.map(opt, hanchar_to_string)
+  |> option.unwrap("NONE")
+}
+
 // ShapeChar constructor
 pub fn shapechar_new(input: String) -> ShapeChar {
   create_restricted_char(
@@ -144,4 +149,9 @@ pub fn shapechar_new(input: String) -> ShapeChar {
 // ShapeChar accessor
 pub fn shapechar_to_string(restricted: ShapeChar) -> String {
   restricted.value
+}
+
+pub fn shapechar_to_string_option(opt: Option(ShapeChar)) -> String {
+  option.map(opt, shapechar_to_string)
+  |> option.unwrap("NONE")
 }
