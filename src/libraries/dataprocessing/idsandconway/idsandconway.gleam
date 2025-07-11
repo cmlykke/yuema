@@ -10,6 +10,8 @@ import gleam/set.{type Set}
 import gleam/int
 import gleam/option.{type Option, None, Some}
 import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
+import libraries/dataprocessing/idsandconway/createidsrecur
+
 
 //C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\util\idsrecur.gleam
 
@@ -17,7 +19,7 @@ import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 // Accessor for shape_char value as string
 
 pub fn idsrecur_to_string_public(inp: String, ids: Dict(String, String)) -> String {
-  let recur = idsrecursion(inp, ids)
+  let recur = createidsrecur.idsrecursion(inp, ids)
   idsrecur_to_string(recur)
 }
 
@@ -143,37 +145,4 @@ fn general_case(children: List(Idsrecur), ids: Idsrecur) -> String {
     }
   }
 }
-
-//********************************************** create recursion object **********************************
-
-
-pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
-  case dict.get(ids, char) {
-    Ok(val) if val != char -> {
-      let graphemes = string.to_graphemes(val)
-      case list.first(graphemes) {
-        Ok(shape_str) -> {
-          let shape = idsrecur.shapechar_new(shape_str)
-          let previus_han_har = idsrecur.hanchar_new(char)
-          let components = list.drop(graphemes, 1)
-          let filtered_components = list.filter(components, fn(c) {
-            string.to_graphemes(c)
-            |> list.all(fn(g) { string.byte_size(g) > 1 })
-          })
-          let children = list.map(filtered_components, fn(c) { Some(idsrecursion(c, ids)) })
-          idsrecur.idsrecur_new(Some(shape), None, Some(previus_han_har), children)
-        }
-        Error(_) -> {
-          let han = idsrecur.hanchar_new(char)
-          idsrecur.idsrecur_new(None, Some(han), None, [])
-        }
-      }
-    }
-    _ -> {
-      let han = idsrecur.hanchar_new(char)
-      idsrecur.idsrecur_new(None, Some(han), None, [])
-    }
-  }
-}
-
 

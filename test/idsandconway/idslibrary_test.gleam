@@ -11,6 +11,7 @@ import gleam/set
 import gleam/dict.{type Dict}
 import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 import libraries/util/fileoutput
+import libraries/dataprocessing/idsandconway/createidsrecur
 
 
 pub fn main() {
@@ -36,7 +37,7 @@ pub fn print_recur() {
 }
 
 fn idsrecur_short(str: String, combinedids: Dict(String, String)) {
-  let test1a: Idsrecur = idsandconway.idsrecursion(str, combinedids)
+  let test1a: Idsrecur = createidsrecur.idsrecursion(str, combinedids)
   let test1b: String = idsrecur.idsrecur_to_string(test1a)
   let shortstr: String = idsandconway.idsrecur_to_string(test1a)
 
@@ -48,7 +49,7 @@ pub fn recur_short_str_test() {
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
   let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
-  let eachids: Idsrecur = idsandconway.idsrecursion("帅", combinedids)
+  let eachids: Idsrecur = createidsrecur.idsrecursion("帅", combinedids)
   io.println("帅")                        //  ({帅}⿰[({}⿰[])({}丨[])({}丿[])({}巾[])])
 
   let eachidlongstr: String = idsrecur.idsrecur_to_string(eachids)
@@ -76,7 +77,7 @@ pub fn recur_short_str_test() {
 fn process_strokes_recurshortstring(generalstandardstroke: List(String), combinedids: Dict(String, String)) -> List(String) {
 
   list.map(generalstandardstroke, fn(stroke) {
-    let eachids: Idsrecur = idsandconway.idsrecursion(stroke, combinedids)
+    let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
     idsandconway.idsrecur_to_string(eachids)
   })
 }
@@ -85,7 +86,7 @@ fn process_strokes_recurfillstring(generalstandardstroke: List(String)) -> List(
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
 
   list.map(generalstandardstroke, fn(stroke) {
-    let eachids: Idsrecur = idsandconway.idsrecursion(stroke, combinedids)
+    let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
     idsrecur.idsrecur_to_string(eachids)
   })
 }
@@ -96,14 +97,14 @@ pub fn nestedids() {
   let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
 
-  let test1a: Idsrecur = idsandconway.idsrecursion("𠯀", combinedids)
+  let test1a: Idsrecur = createidsrecur.idsrecursion("𠯀", combinedids)
   let test1b: String = idsrecur.idsrecur_to_string(test1a)
 
   io.println("done: " <> test1b)
   should.equal(test1b, "(⿰[(口[])(川[])])")
 
   //枭	⿹④木
-  let test2a: Idsrecur = idsandconway.idsrecursion("枭", combinedids)
+  let test2a: Idsrecur = createidsrecur.idsrecursion("枭", combinedids)
   let test2b: String = idsrecur.idsrecur_to_string(test2a)
 
   io.println("done: " <> test2b)
