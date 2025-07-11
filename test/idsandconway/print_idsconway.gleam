@@ -24,9 +24,7 @@ pub fn recur_short_str_numbers_test() {
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
   let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
-  let allres_raw: List(String) = process_strokes_recurshortstring(generalstandardstroke, combinedids)
-  let allres = filter_enclosed_alphanumerics(allres_raw)
-
+  let allres: List(String) = process_strokes_recurshortstring_numbersonly(generalstandardstroke, combinedids)
 
   let outputresult: Result(Nil, String)  = fileoutput.write_to_file(allres, "idsbreakup_shortnumbers")
   case outputresult {
@@ -96,6 +94,17 @@ fn process_strokes_recurshortstring(generalstandardstroke: List(String), combine
   })
 }
 
+pub fn process_strokes_recurshortstring_numbersonly(generalstandardstroke: List(String), combinedids: Dict(String, String)) -> List(String) {
+  generalstandardstroke
+  |> list.map(fn(stroke) {
+    let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
+    let full_string = idsrecur.idsrecur_to_string(eachids)
+    let shortstring = idsandconway.idsrecur_to_string(eachids)
+    #(stroke <> " " <> shortstring <> " " <> full_string, shortstring)
+  })
+  |> list.filter(fn(pair) { filter_enclosed_alphanumerics([pair.1]) != [] })
+  |> list.map(fn(pair) { pair.0 })
+}
 
 
 fn idsrecur_short(str: String, combinedids: Dict(String, String)) {
