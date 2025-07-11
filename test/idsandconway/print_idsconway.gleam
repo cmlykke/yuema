@@ -18,26 +18,7 @@ pub fn main() {
   gleeunit.main()
 }
 
-pub fn print_recur() {
-  //let combinedids: Dict(String, String) = idslibrary.combined_ids_map()
-  let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
-
-  let allres: List(String) = process_strokes_recurfillstring(generalstandardstroke)
-
-  let outputresult: Result(Nil, String)  = fileoutput.write_to_file(allres, "idsbreakup")
-  case outputresult {
-    Ok(_) -> io.println("Success: print_recur_test")
-    Error(err) -> io.println("Error: print_recur_test: " <> err)
-  }
-
-  //息 (⿱[(自[])(心[])])
-  //倔 (⿰[(亻[])(⿸[(尸[])(⿱[(⿻[(凵[])(丨[])])(凵[])])])])
-  //徒 (⿰[(彳[])(⿱[(⿱[(十[])(一[])])(龰[])])])
-
-}
-
-
-pub fn recur_short_str() {
+pub fn recur_short_str_test() {
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
   let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
@@ -66,6 +47,25 @@ pub fn recur_short_str() {
 
 }
 
+pub fn print_recur() {
+  //let combinedids: Dict(String, String) = idslibrary.combined_ids_map()
+  let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
+
+  let allres: List(String) = process_strokes_recurfillstring(generalstandardstroke)
+
+  let outputresult: Result(Nil, String)  = fileoutput.write_to_file(allres, "idsbreakup")
+  case outputresult {
+    Ok(_) -> io.println("Success: print_recur_test")
+    Error(err) -> io.println("Error: print_recur_test: " <> err)
+  }
+
+  //息 (⿱[(自[])(心[])])
+  //倔 (⿰[(亻[])(⿸[(尸[])(⿱[(⿻[(凵[])(丨[])])(凵[])])])])
+  //徒 (⿰[(彳[])(⿱[(⿱[(十[])(一[])])(龰[])])])
+
+}
+
+
 fn process_strokes_recurfillstring(generalstandardstroke: List(String)) -> List(String) {
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
 
@@ -77,10 +77,9 @@ fn process_strokes_recurfillstring(generalstandardstroke: List(String)) -> List(
 
 
 fn process_strokes_recurshortstring(generalstandardstroke: List(String), combinedids: Dict(String, String)) -> List(String) {
-
   list.map(generalstandardstroke, fn(stroke) {
     let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
-    idsandconway.idsrecur_to_string(eachids)
+    stroke <> " " <> idsandconway.idsrecur_to_string(eachids)
   })
 }
 
