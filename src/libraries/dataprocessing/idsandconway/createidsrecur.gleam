@@ -62,7 +62,8 @@ fn parse_component(graphemes: List(String), ids: Dict(String, String)) -> #(Idsr
 pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
   case dict.get(ids, char) {
     Ok(val) if val != char -> {
-      let graphemes = string.to_graphemes(val)
+      let graphemes_raw = string.to_graphemes(val)
+      let graphemes = list.filter(graphemes_raw, fn(g) { string.byte_size(g) > 1 })
       let #(inner, remaining) = parse_component(graphemes, ids)
       case remaining {
         [] -> idsrecur.idsrecur_new( idsrecur.idsrecur_get_shape_char(inner),

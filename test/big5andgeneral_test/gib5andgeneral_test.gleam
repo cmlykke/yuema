@@ -12,7 +12,7 @@ pub fn main() {
   gleeunit.main()
 }
 
-pub fn characters_to_support() {
+pub fn characters_to_support_test() {
   let collection = big5andgeneralstandard.characters_to_support()
 
   //io.println("traditional characters list length: " <> int.to_string(list.length(collection.trad_list)))
