@@ -18,23 +18,6 @@ pub fn main() {
   gleeunit.main()
 }
 
-pub fn print_recur() {
-  //let combinedids: Dict(String, String) = idslibrary.combined_ids_map()
-  let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
-
-  let allres: List(String) = process_strokes_recurfillstring(generalstandardstroke)
-
-  let outputresult: Result(Nil, String)  = fileoutput.write_to_file(allres, "idsbreakup")
-  case outputresult {
-    Ok(_) -> io.println("Success: print_recur_test")
-    Error(err) -> io.println("Error: print_recur_test: " <> err)
-  }
-
-  //息 (⿱[(自[])(心[])])
-  //倔 (⿰[(亻[])(⿸[(尸[])(⿱[(⿻[(凵[])(丨[])])(凵[])])])])
-  //徒 (⿰[(彳[])(⿱[(⿱[(十[])(一[])])(龰[])])])
-
-}
 
 pub fn nestedids_test() {
   let combinedids: Dict(String, String) = idslibrary.combined_ids_map()
@@ -97,59 +80,5 @@ pub fn characters_to_support_test() {
 }
 
 
-pub fn recur_short_str() {
-  let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
-  let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
-
-  let eachids: Idsrecur = createidsrecur.idsrecursion("帅", combinedids)
-  io.println("帅")                        //  ({帅}⿰[({}⿰[])({}丨[])({}丿[])({}巾[])])
-
-  let eachidlongstr: String = idsrecur.idsrecur_to_string(eachids)
-  io.println(eachidlongstr)
-  let testttt: String = idsandconway.idsrecur_to_string(eachids)
-  io.println("帅" <> " short: " <> testttt)
-
-  idsrecur_short("𠯀", combinedids)
-  idsrecur_short("帅", combinedids) // 帅	⿰⿰丨丿巾
-
-
-  // jeg maa finde en loesning paa 帅 problemet
-  // 帅
-
-  let allres: List(String) = process_strokes_recurshortstring(generalstandardstroke, combinedids)
-
-  let outputresult: Result(Nil, String)  = fileoutput.write_to_file(allres, "idsbreakup_short")
-  case outputresult {
-    Ok(_) -> io.println("Success: print_recur_test")
-    Error(err) -> io.println("Error: print_recur_test: " <> err)
-  }
-
-}
-
-fn idsrecur_short(str: String, combinedids: Dict(String, String)) {
-  let test1a: Idsrecur = createidsrecur.idsrecursion(str, combinedids)
-  let test1b: String = idsrecur.idsrecur_to_string(test1a)
-  let shortstr: String = idsandconway.idsrecur_to_string(test1a)
-
-  io.println(str <> " long: " <> test1b)
-  io.println(str <> " short: " <> shortstr)
-}
-
-fn process_strokes_recurshortstring(generalstandardstroke: List(String), combinedids: Dict(String, String)) -> List(String) {
-
-  list.map(generalstandardstroke, fn(stroke) {
-    let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
-    idsandconway.idsrecur_to_string(eachids)
-  })
-}
-
-fn process_strokes_recurfillstring(generalstandardstroke: List(String)) -> List(String) {
-  let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
-
-  list.map(generalstandardstroke, fn(stroke) {
-    let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
-    idsrecur.idsrecur_to_string(eachids)
-  })
-}
 
 
