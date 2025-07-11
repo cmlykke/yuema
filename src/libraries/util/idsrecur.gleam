@@ -82,9 +82,9 @@ pub fn idsrecur_to_string(ids: Idsrecur) -> String {
 //******************************* ShapeChar and HanChar  ***********************************
 
 // Define regex patterns for valid characters
-const regex_pattern_shapechar: String = "[\\x{2FF0}-\\x{2FFF}\\x{303E}\\x{31EF}]"
+pub const regex_pattern_shapechar: String = "[\\x{2FF0}-\\x{2FFF}\\x{303E}\\x{31EF}]"
 
-const regex_pattern_hanchar: String = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
+pub const regex_pattern_hanchar: String = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
 
 // Define opaque types
 pub opaque type HanChar {

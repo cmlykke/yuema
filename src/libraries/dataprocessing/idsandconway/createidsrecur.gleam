@@ -17,35 +17,63 @@ import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 // import libraries/dataprocessing/idsandconway/createidsrecur
 
 //********************************************** create recursion object **********************************
+pub fn is_shape_char(input: String) -> Bool {
+  case string.length(input) == 1 {
+    True -> {
+      let assert Ok(regex) = regexp.compile(idsrecur.regex_pattern_shapechar, regexp.Options(case_insensitive: False, multi_line: False))
+      regexp.check(regex, input)
+    }
+    False -> False
+  }
+}
 
+fn parse_component(graphemes: List(String), ids: Dict(String, String)) -> #(Idsrecur, List(String)) {
+  case graphemes {
+    [head, ..rest] -> {
+      case is_shape_char(head) {
+        True -> {
+          let arity = case head {
+            "⿲" | "⿳" -> 3
+            _ -> 2
+          }
+          let shape = idsrecur.shapechar_new(head)
+          let #(children_rev, final_rem) = list.fold(list.range(0, arity - 1), #([], rest), fn(state, _) {
+            let #(ch_rev, rem) = state
+            let #(sub, new_rem) = parse_component(rem, ids)
+            #([Some(sub), ..ch_rev], new_rem)
+          })
+          let children = list.reverse(children_rev)
+          let node = idsrecur.idsrecur_new(Some(shape), None, None, children)
+          #(node, final_rem)
+        }
+        False -> {
+          let node = idsrecursion(head, ids)
+          #(node, rest)
+        }
+      }
+    }
+    [] -> {
+      let message = "Empty graphemes in parse_component: " <> string.concat(graphemes)
+      panic as message
+    }
+  }
+}
 
 pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
   case dict.get(ids, char) {
     Ok(val) if val != char -> {
       let graphemes = string.to_graphemes(val)
-      case list.first(graphemes) {
-        Ok(shape_str) -> {
-          let shape = idsrecur.shapechar_new(shape_str)
-          let previus_han_har = idsrecur.hanchar_new(char)
-          let components = list.drop(graphemes, 1)
-          let filtered_components = list.filter(components, fn(c) {
-            string.to_graphemes(c)
-            |> list.all(fn(g) { string.byte_size(g) > 1 })
-          })
-          let children = list.map(filtered_components, fn(c) { Some(idsrecursion(c, ids)) })
-          idsrecur.idsrecur_new(Some(shape), None, Some(previus_han_har), children)
-        }
-        Error(_) -> {
-          let han = idsrecur.hanchar_new(char)
-          idsrecur.idsrecur_new(None, Some(han), None, [])
-        }
+      let #(inner, remaining) = parse_component(graphemes, ids)
+      case remaining {
+        [] -> idsrecur.idsrecur_new( idsrecur.idsrecur_get_shape_char(inner),
+        idsrecur.idsrecur_get_han_char(inner),
+        Some(idsrecur.hanchar_new(char)),
+        idsrecur.idsrecur_get_children(inner))
+        _ -> panic as "Extra characters after parsing IDS sequence"
       }
     }
     _ -> {
-      let han = idsrecur.hanchar_new(char)
-      idsrecur.idsrecur_new(None, Some(han), None, [])
+      idsrecur.idsrecur_new(None, Some(idsrecur.hanchar_new(char)), None, [])
     }
   }
 }
-
-

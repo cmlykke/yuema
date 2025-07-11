@@ -36,16 +36,63 @@ pub fn print_recur() {
 
 }
 
-fn idsrecur_short(str: String, combinedids: Dict(String, String)) {
-  let test1a: Idsrecur = createidsrecur.idsrecursion(str, combinedids)
-  let test1b: String = idsrecur.idsrecur_to_string(test1a)
-  let shortstr: String = idsandconway.idsrecur_to_string(test1a)
+pub fn nestedids_test() {
+  let combinedids: Dict(String, String) = idslibrary.combined_ids_map()
+  //let big5andgs: CharacterCollection = big5andgeneralstandard.characters_to_support()
+  let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
-  io.println(str <> " long: " <> test1b)
-  io.println(str <> " short: " <> shortstr)
+  // 𠯀	⿰口川
+  let test1a: Idsrecur = createidsrecur.idsrecursion("𠯀", combinedids)
+  let test1b: String = idsrecur.idsrecur_to_string(test1a)
+
+  io.println("done: " <> test1b)
+  should.equal(test1b, "({𠯀}⿰[({}口[])({}川[])])")
+
+  //枭	⿹④木
+  let test2a: Idsrecur = createidsrecur.idsrecursion("枭", combinedids)
+  let test2b: String = idsrecur.idsrecur_to_string(test2a)
+  io.println("done: " <> test2b)
+  should.equal(test2b, "({枭}⿹[({}④[])({}木[])])")
+
+  //帅	⿰⿰丨丿巾
+  let test3a: Idsrecur = createidsrecur.idsrecursion("帅", combinedids)
+  let test3b: String = idsrecur.idsrecur_to_string(test3a)
+  io.println("done: " <> test3b)
+  should.equal(test3b, "({帅}⿰[({}⿰[({}丨[])({}丿[])])({}巾[])])")
+
+  // 𠮸	⿹⺄⿱亠口
+  let test4a: Idsrecur = createidsrecur.idsrecursion("𠮸", combinedids)
+  let test4b: String = idsrecur.idsrecur_to_string(test4a)
+  io.println("done: " <> test4b)
+  should.equal(test4b, "({𠮸}⿹[({}⺄[])({}⿱[({}亠[])({}口[])])])")
+
+  // 𠮺	⿰口⿰丨⿱丿乀
+  let test5a: Idsrecur = createidsrecur.idsrecursion("𠮺", combinedids)
+  let test5b: String = idsrecur.idsrecur_to_string(test5a)
+  io.println("done: " <> test5b)
+  should.equal(test5b, "({𠮺}⿰[({}口[])({}⿰[({}丨[])({}⿱[({}丿[])({}乀[])])])])")
+
 }
 
-pub fn recur_short_str_test() {
+
+pub fn characters_to_support() {
+  let officialcollection: Dict(String, String) = idslibrary.cjkvi_ids_map()
+  let manualcollection: Dict(String, String) = idslibrary.personal_ids_map()
+  let combined: Dict(String, String) = dict.merge(manualcollection, officialcollection)
+
+  //io.println("official ids cound: " <> int.to_string(dict.size(officialcollection)))
+  should.equal(dict.size(officialcollection), 88937)
+
+  //io.println("manual ids count: " <> int.to_string(dict.size(manualcollection)))
+  should.equal(dict.size(manualcollection), 133)
+
+  //io.println("combined ids count: " <> int.to_string(dict.size(combined)))
+  should.equal(dict.size(combined), 89070)
+
+}
+
+
+pub fn recur_short_str() {
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
   let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
@@ -74,6 +121,15 @@ pub fn recur_short_str_test() {
 
 }
 
+fn idsrecur_short(str: String, combinedids: Dict(String, String)) {
+  let test1a: Idsrecur = createidsrecur.idsrecursion(str, combinedids)
+  let test1b: String = idsrecur.idsrecur_to_string(test1a)
+  let shortstr: String = idsandconway.idsrecur_to_string(test1a)
+
+  io.println(str <> " long: " <> test1b)
+  io.println(str <> " short: " <> shortstr)
+}
+
 fn process_strokes_recurshortstring(generalstandardstroke: List(String), combinedids: Dict(String, String)) -> List(String) {
 
   list.map(generalstandardstroke, fn(stroke) {
@@ -89,43 +145,6 @@ fn process_strokes_recurfillstring(generalstandardstroke: List(String)) -> List(
     let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
     idsrecur.idsrecur_to_string(eachids)
   })
-}
-
-pub fn nestedids() {
-  let combinedids: Dict(String, String) = idslibrary.combined_ids_map()
-  //let big5andgs: CharacterCollection = big5andgeneralstandard.characters_to_support()
-  let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
-
-
-  let test1a: Idsrecur = createidsrecur.idsrecursion("𠯀", combinedids)
-  let test1b: String = idsrecur.idsrecur_to_string(test1a)
-
-  io.println("done: " <> test1b)
-  should.equal(test1b, "(⿰[(口[])(川[])])")
-
-  //枭	⿹④木
-  let test2a: Idsrecur = createidsrecur.idsrecursion("枭", combinedids)
-  let test2b: String = idsrecur.idsrecur_to_string(test2a)
-
-  io.println("done: " <> test2b)
-  should.equal(test2b, "(⿹[(④[])(木[])])")
-}
-
-
-pub fn characters_to_support() {
-  let officialcollection: Dict(String, String) = idslibrary.cjkvi_ids_map()
-  let manualcollection: Dict(String, String) = idslibrary.personal_ids_map()
-  let combined: Dict(String, String) = dict.merge(manualcollection, officialcollection)
-
-  //io.println("official ids cound: " <> int.to_string(dict.size(officialcollection)))
-  should.equal(dict.size(officialcollection), 88937)
-
-  //io.println("manual ids count: " <> int.to_string(dict.size(manualcollection)))
-  should.equal(dict.size(manualcollection), 133)
-
-  //io.println("combined ids count: " <> int.to_string(dict.size(combined)))
-  should.equal(dict.size(combined), 89070)
-
 }
 
 
