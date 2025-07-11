@@ -1,3 +1,4 @@
+import gleam/regexp
 import gleam/int
 import gleam/io
 import gleeunit
@@ -18,24 +19,26 @@ pub fn main() {
   gleeunit.main()
 }
 
-pub fn recur_short_str_test() {
+
+pub fn recur_short_str_numbers_test() {
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
   let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
-  let eachids: Idsrecur = createidsrecur.idsrecursion("帅", combinedids)
-  io.println("帅")                        //  ({帅}⿰[({}⿰[])({}丨[])({}丿[])({}巾[])])
-
-  let eachidlongstr: String = idsrecur.idsrecur_to_string(eachids)
-  io.println(eachidlongstr)
-  let testttt: String = idsandconway.idsrecur_to_string(eachids)
-  io.println("帅" <> " short: " <> testttt)
-
-  idsrecur_short("𠯀", combinedids)
-  idsrecur_short("帅", combinedids) // 帅	⿰⿰丨丿巾
+  let allres_raw: List(String) = process_strokes_recurshortstring(generalstandardstroke, combinedids)
+  let allres = filter_enclosed_alphanumerics(allres_raw)
 
 
-  // jeg maa finde en loesning paa 帅 problemet
-  // 帅
+  let outputresult: Result(Nil, String)  = fileoutput.write_to_file(allres, "idsbreakup_shortnumbers")
+  case outputresult {
+    Ok(_) -> io.println("Success: print_recur_test")
+    Error(err) -> io.println("Error: print_recur_test: " <> err)
+  }
+
+}
+
+pub fn recur_short_str_test() {
+  let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
+  let generalstandardstroke: List(String) = big5andgeneralstandard.generalstandardlist()
 
   let allres: List(String) = process_strokes_recurshortstring(generalstandardstroke, combinedids)
 
@@ -44,7 +47,6 @@ pub fn recur_short_str_test() {
     Ok(_) -> io.println("Success: print_recur_test")
     Error(err) -> io.println("Error: print_recur_test: " <> err)
   }
-
 }
 
 pub fn print_recur() {
@@ -65,6 +67,16 @@ pub fn print_recur() {
 
 }
 
+pub fn filter_enclosed_alphanumerics(lines: List(String)) -> List(String) {
+  // Compile a regex for the Enclosed Alphanumerics range (U+2460 to U+24FF)
+  let assert Ok(regex) = regexp.compile(
+  "[\\x{2460}-\\x{24FF}]",
+  regexp.Options(case_insensitive: False, multi_line: False),
+  )
+
+  // Filter lines that contain at least one Enclosed Alphanumeric character
+  list.filter(lines, fn(line) { regexp.check(regex, line) })
+}
 
 fn process_strokes_recurfillstring(generalstandardstroke: List(String)) -> List(String) {
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
@@ -79,7 +91,8 @@ fn process_strokes_recurfillstring(generalstandardstroke: List(String)) -> List(
 fn process_strokes_recurshortstring(generalstandardstroke: List(String), combinedids: Dict(String, String)) -> List(String) {
   list.map(generalstandardstroke, fn(stroke) {
     let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
-    stroke <> " " <> idsandconway.idsrecur_to_string(eachids)
+    let full_string = idsrecur.idsrecur_to_string(eachids)
+    stroke <> " " <> idsandconway.idsrecur_to_string(eachids) <> " " <> full_string
   })
 }
 
