@@ -89,6 +89,28 @@ fn rightmost_previous(ids: Idsrecur) -> Option(HanChar) {
   }
 }
 
+fn leftmost_previous(ids: Idsrecur) -> Option(HanChar) {
+  case idsrecur.idsrecur_get_han_char(ids) {
+    Some(_) -> None
+    None -> {
+      let children = list.map(idsrecur.idsrecur_get_children(ids), fn(opt) {
+        let assert Some(child) = opt
+        child
+      })
+      case list.is_empty(children) {
+        True -> panic as "Internal node with no children"
+        False -> {
+          let assert Ok(first) = list.first(children)
+          case leftmost_previous(first) {
+            Some(p) -> Some(p)
+            None -> idsrecur.idsrecur_get_previus_han_char(ids)
+          }
+        }
+      }
+    }
+  }
+}
+
 // Helper to get the right-most previous HanChar if allowed by the conditions
 fn get_rightmost_previous_if_allowed(ids: Idsrecur) -> Option(HanChar) {
   case idsrecur.idsrecur_get_han_char(ids) {
