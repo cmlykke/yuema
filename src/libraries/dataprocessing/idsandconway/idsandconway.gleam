@@ -20,10 +20,10 @@ import libraries/dataprocessing/idsandconway/createidsrecur
 
 pub fn idsrecur_to_string_public(inp: String, ids: Dict(String, String)) -> String {
   let recur = createidsrecur.idsrecursion(inp, ids)
-  idsrecur_to_string(recur)
+  idsrecur_to_string_short(recur)
 }
 
-pub fn idsrecur_to_string(ids: Idsrecur) -> String {
+pub fn idsrecur_to_string_short(ids: Idsrecur) -> String {
   let prev_opt: Option(HanChar) = idsrecur.idsrecur_get_previus_han_char(ids)
   let shape_opt: Option(ShapeChar) = idsrecur.idsrecur_get_shape_char(ids)
   let children:  List(Idsrecur) = list.map(idsrecur.idsrecur_get_children(ids), fn(opt) {

@@ -90,7 +90,7 @@ fn process_strokes_recurshortstring(generalstandardstroke: List(String), combine
   list.map(generalstandardstroke, fn(stroke) {
     let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
     let full_string = idsrecur.idsrecur_to_string(eachids)
-    stroke <> " " <> idsandconway.idsrecur_to_string(eachids) <> " " <> full_string
+    stroke <> " " <> idsandconway.idsrecur_to_string_short(eachids) <> " " <> full_string
   })
 }
 
@@ -99,7 +99,7 @@ pub fn process_strokes_recurshortstring_numbersonly(generalstandardstroke: List(
   |> list.map(fn(stroke) {
     let eachids: Idsrecur = createidsrecur.idsrecursion(stroke, combinedids)
     let full_string = idsrecur.idsrecur_to_string(eachids)
-    let shortstring = idsandconway.idsrecur_to_string(eachids)
+    let shortstring = idsandconway.idsrecur_to_string_short(eachids)
     #(stroke <> " " <> shortstring <> " " <> full_string, shortstring)
   })
   |> list.filter(fn(pair) { filter_enclosed_alphanumerics([pair.1]) != [] })
@@ -110,7 +110,7 @@ pub fn process_strokes_recurshortstring_numbersonly(generalstandardstroke: List(
 fn idsrecur_short(str: String, combinedids: Dict(String, String)) {
   let test1a: Idsrecur = createidsrecur.idsrecursion(str, combinedids)
   let test1b: String = idsrecur.idsrecur_to_string(test1a)
-  let shortstr: String = idsandconway.idsrecur_to_string(test1a)
+  let shortstr: String = idsandconway.idsrecur_to_string_short(test1a)
 
   io.println(str <> " long: " <> test1b)
   io.println(str <> " short: " <> shortstr)
