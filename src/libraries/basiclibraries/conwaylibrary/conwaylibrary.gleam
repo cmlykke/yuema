@@ -9,7 +9,82 @@ import simplifile
 // Path to the Conway official file
 const conwayofficial_file_path = "./src/resources/other/codepoint-character-sequence.txt"
 
-pub fn parse_conway_files() -> Result(Dict(String, String), String) {
+
+type Part {
+  Fixed(String)
+  Choice(List(String))
+}
+
+pub fn rolled_out_conway() -> Dict(String, List(String)) {
+  let rawdict: Dict(String, String) = get_conway_dict()
+  process_dict(rawdict)
+}
+
+fn process_dict(input: Dict(String, String)) -> Dict(String, List(String)) {
+  dict.map_values(input, fn(_, value) {
+    expand(value)
+  })
+}
+
+fn expand(value: String) -> List(String) {
+  let parts = parse(value)
+  list.fold(parts, [""] , fn(acc, part) {
+    case part {
+      Fixed(s) -> list.map(acc, fn(x) { x <> s })
+      Choice(cs) -> list.flat_map(acc, fn(x) {
+        list.map(cs, fn(c) { x <> c })
+      })
+    }
+  })
+}
+
+fn parse(value: String) -> List(Part) {
+  parse_helper(string.to_graphemes(value), [], "")
+}
+
+fn parse_helper(chars: List(String), acc: List(Part), current: String) -> List(Part) {
+  case chars {
+    [] -> {
+      case current == "" {
+        True -> list.reverse(acc)
+        False -> list.reverse([Fixed(current), ..acc])
+      }
+    }
+    ["(", ..rest] -> {
+      let acc = case current == "" {
+        True -> acc
+        False -> [Fixed(current), ..acc]
+      }
+      let #(inside, rest2) = collect_choice(rest, "")
+      let choices = string.split(inside, on: "|")
+      let acc = [Choice(choices), ..acc]
+      parse_helper(rest2, acc, "")
+    }
+    [ch, ..rest] -> parse_helper(rest, acc, current <> ch)
+  }
+}
+
+fn collect_choice(chars: List(String), inside: String) -> #(String, List(String)) {
+  case chars {
+    [] -> panic as "Unclosed ("
+    [")", ..rest] -> #(inside, rest)
+    [ch, ..rest] -> collect_choice(rest, inside <> ch)
+  }
+}
+
+// **************************** raw conway code *************************************
+
+
+fn get_conway_dict() -> Dict(String, String) {
+  case parse_conway_files() {
+    Ok(dict) -> dict
+    _ -> {
+      panic as "Failed to parse Conway files: get_conway_dict()"
+    }
+  }
+}
+
+fn parse_conway_files() -> Result(Dict(String, String), String) {
   // Read the file using simplifile
   case simplifile.read(from: conwayofficial_file_path) {
     Ok(content) -> {
