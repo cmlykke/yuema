@@ -10,9 +10,9 @@ import gleam/set.{type Set}
 import gleam/int
 import gleam/option.{type Option, None, Some}
 import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
-
-//C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\util\idsrecur.gleam
 import libraries/dataprocessing/idsandconway/createidsrecur
+
+
 
 
 pub fn first_of_three_v1(ids: Idsrecur) -> Option(HanChar) {
