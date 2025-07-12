@@ -11,7 +11,7 @@ import gleam/int
 import gleam/option.{type Option, None, Some}
 import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 import libraries/dataprocessing/idsandconway/createidsrecur
-import libraries/dataprocessing/idsandconway/idsandconway_idshelper
+import libraries/dataprocessing/idsandconway/idsandconway_ids_v1
 //C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\dataprocessing\idsandconway\idsandconway_ids_v2.gleam
 import libraries/dataprocessing/idsandconway/idsandconway_ids_v2
 
