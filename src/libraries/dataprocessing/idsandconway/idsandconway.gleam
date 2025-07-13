@@ -14,6 +14,9 @@ import libraries/dataprocessing/idsandconway/createidsrecur
 import libraries/dataprocessing/idsandconway/idsandconway_ids_v1
 //C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\dataprocessing\idsandconway\idsandconway_ids_v2.gleam
 import libraries/dataprocessing/idsandconway/idsandconway_ids_v2
+import libraries/dataprocessing/radicaldict/readradicaldict
+
+// C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\dataprocessing\radicaldict\readradicaldict.gleam
 
 
 
@@ -42,20 +45,12 @@ pub fn idsrecur_to_string_short_v1(ids: Idsrecur) -> String {
   }
 }
 
-//pub fn idsrecur_to_string_short_v1(ids: Idsrecur) -> String {
-//  let first: Option(HanChar) = idsandconway_idshelper.first_of_three_v1(ids)
-//  let second: Option(HanChar) = idsandconway_idshelper.second_of_three_v1(ids)
-//  let third: Option(HanChar) = idsandconway_idshelper.third_of_three_v1(ids)
-
-//  case first {
-//    None -> panic as idsrecur.idsrecur_to_string(ids)
-//    Some(_) -> {
-//      let first_str = idsrecur.hanchar_to_string_option(first)
-//      let second_str = idsrecur.hanchar_to_string_option(second)
-//      let third_str = idsrecur.hanchar_to_string_option(third)
-//      first_str <> second_str <> third_str
-//    }
-//  }
-//}
 
 
+fn get_fixed_stroke_dict() -> dict.Dict(String, String) {
+  readradicaldict.get_fixed_stroke_dict()
+}
+
+fn get_fixed_radical_dict() -> dict.Dict(String, String) {
+  readradicaldict.get_fixed_radical_dict()
+}

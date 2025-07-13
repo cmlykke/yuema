@@ -27,6 +27,29 @@ pub fn is_shape_char(input: String) -> Bool {
   }
 }
 
+pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
+  case dict.get(ids, char) {
+    Ok(val) if val != char -> {
+      let graphemes_raw = string.to_graphemes(val)
+      let graphemes = list.filter(graphemes_raw, fn(g) { string.byte_size(g) > 1 })
+      let #(inner, remaining) = parse_component(graphemes, ids)
+      case remaining {
+        [] -> idsrecur.idsrecur_new( idsrecur.idsrecur_get_shape_char(inner),
+        idsrecur.idsrecur_get_han_char(inner),
+        Some(idsrecur.hanchar_new(char)),
+        idsrecur.idsrecur_get_children(inner))
+        _ -> {
+          let message ="Extra characters after parsing IDS sequence: " <> char
+          panic as message
+        }
+      }
+    }
+    _ -> {
+      idsrecur.idsrecur_new(None, Some(idsrecur.hanchar_new(char)), None, [])
+    }
+  }
+}
+
 fn parse_component(graphemes: List(String), ids: Dict(String, String)) -> #(Idsrecur, List(String)) {
   case graphemes {
     [head, ..rest] -> {
@@ -55,29 +78,6 @@ fn parse_component(graphemes: List(String), ids: Dict(String, String)) -> #(Idsr
     [] -> {
       let message = "Empty graphemes in parse_component: " <> string.concat(graphemes)
       panic as message
-    }
-  }
-}
-
-pub fn idsrecursion(char: String, ids: Dict(String, String)) -> Idsrecur {
-  case dict.get(ids, char) {
-    Ok(val) if val != char -> {
-      let graphemes_raw = string.to_graphemes(val)
-      let graphemes = list.filter(graphemes_raw, fn(g) { string.byte_size(g) > 1 })
-      let #(inner, remaining) = parse_component(graphemes, ids)
-      case remaining {
-        [] -> idsrecur.idsrecur_new( idsrecur.idsrecur_get_shape_char(inner),
-        idsrecur.idsrecur_get_han_char(inner),
-        Some(idsrecur.hanchar_new(char)),
-        idsrecur.idsrecur_get_children(inner))
-        _ -> {
-          let message ="Extra characters after parsing IDS sequence: " <> char
-          panic as message
-        }
-      }
-    }
-    _ -> {
-      idsrecur.idsrecur_new(None, Some(idsrecur.hanchar_new(char)), None, [])
     }
   }
 }
