@@ -19,8 +19,12 @@ import libraries/dataprocessing/radicaldict/readradicaldict
 // C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\dataprocessing\radicaldict\readradicaldict.gleam
 
 
-
 pub fn idsrecur_to_string_short_v1(ids: Idsrecur) -> String {
+  let mylist: List(String) = idsrecur_to_list_short_v1(ids)
+  string.join(mylist, "")
+}
+
+pub fn idsrecur_to_list_short_v1(ids: Idsrecur) -> List(String) {
   let first: Option(HanChar) = idsandconway_ids_v2.first_of_three_v2(ids)
   let second: Option(HanChar) = idsandconway_ids_v2.second_of_three_v2(ids)
   let third: Option(HanChar) = idsandconway_ids_v2.third_of_three_v2(ids)
@@ -40,11 +44,15 @@ pub fn idsrecur_to_string_short_v1(ids: Idsrecur) -> String {
         Some(han) -> idsrecur.hanchar_to_string(han)
         None -> ""
       }
-      first_str <> second_str <> third_str
+      let strings = [first_str, second_str, third_str]
+      let filtered = list.filter(strings, fn(s) { s != "" })
+      case list.is_empty(filtered) {
+        True -> panic as "Empty list after filtering"
+        False -> filtered
+      }
     }
   }
 }
-
 
 
 fn get_fixed_stroke_dict() -> dict.Dict(String, String) {
