@@ -15,7 +15,8 @@ import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 import libraries/util/fileoutput
 import libraries/dataprocessing/idsandconway/createidsrecur
 import libraries/basiclibraries/conwaylibrary/conwaylibrary
-
+import libraries/util/debugutil
+//C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\util\debugutil.gleam
 
 
 pub fn main() {
@@ -28,6 +29,9 @@ pub fn main() {
 pub fn compare_simplified_shortcode_and_conway_test() {
 
   let conwaydict: Dict(String, List(String)) = conwaylibrary.rolled_out_conway()
+
+  debugutil.dict_string_list(conwaydict, "debug_conway_compare_simplified.txt")
+
   io.println("works conwaydict")
   let combinedids: Dict(String, String) = idslibrary.cjkvi_ids_map()
   io.println("works combinedids")
