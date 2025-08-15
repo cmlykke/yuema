@@ -13,7 +13,7 @@ import gleam/dict.{type Dict}
 import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 import libraries/util/fileoutput
 import libraries/dataprocessing/idsandconway/createidsrecur
-
+import libraries/regexlib
 
 pub fn main() {
   gleeunit.main()
@@ -68,7 +68,7 @@ pub fn print_recur() {
 pub fn filter_enclosed_alphanumerics(lines: List(String)) -> List(String) {
   // Compile a regex for the Enclosed Alphanumerics range (U+2460 to U+24FF)
   let assert Ok(regex) = regexp.compile(
-  "[\\x{2460}-\\x{24FF}]",
+  regexlib.regex_printtest_one,
   regexp.Options(case_insensitive: False, multi_line: False),
   )
 

@@ -6,6 +6,8 @@ import gleam/string
 import gleam/io
 import gleam/regexp
 import gleam/result
+import libraries/regexlib
+
 
 
 //******************************* Idsrecur  ***********************************
@@ -81,10 +83,8 @@ pub fn idsrecur_to_string(ids: Idsrecur) -> String {
 
 //******************************* ShapeChar and HanChar  ***********************************
 
-// Define regex patterns for valid characters
-pub const regex_pattern_shapechar: String = "[\\x{2FF0}-\\x{2FFF}\\x{303E}\\x{31EF}]"
 
-pub const regex_pattern_hanchar: String = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
+// Define regex patterns for valid characters
 
 // Define opaque types
 pub opaque type HanChar {
@@ -120,7 +120,7 @@ constructor: fn(String) -> restricted,
 pub fn hanchar_new(input: String) -> HanChar {
   create_restricted_char(
   input,
-  regex_pattern_hanchar,
+  regexlib.regex_pattern_hanchar,
   "Invalid HanChar: input must contain exactly one character in Unicode range [x{80}-x{D7FF} x{E000}-x{10FFFF}].",
   HanChar,
   )
@@ -140,7 +140,7 @@ pub fn hanchar_to_string_option(opt: Option(HanChar)) -> String {
 pub fn shapechar_new(input: String) -> ShapeChar {
   create_restricted_char(
   input,
-  regex_pattern_shapechar,
+  regexlib.regex_pattern_shapechar,
   "Invalid ShapeChar: input must contain exactly one character in Unicode range U+2FF0-U+2FFF or code points U+303E or U+31EF.",
   ShapeChar,
   )

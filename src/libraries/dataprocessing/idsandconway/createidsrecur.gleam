@@ -11,6 +11,7 @@ import gleam/set.{type Set}
 import gleam/int
 import gleam/option.{type Option, None, Some}
 import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
+import libraries/regexlib
 
 // C:\Users\CMLyk\WebstormProjects\yuema\src\libraries\dataprocessing\idsandconway\createidsrecur.gleam
 
@@ -20,7 +21,7 @@ import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 pub fn is_shape_char(input: String) -> Bool {
   case string.length(input) == 1 {
     True -> {
-      let assert Ok(regex) = regexp.compile(idsrecur.regex_pattern_shapechar, regexp.Options(case_insensitive: False, multi_line: False))
+      let assert Ok(regex) = regexp.compile(regexlib.regex_pattern_shapechar, regexp.Options(case_insensitive: False, multi_line: False))
       regexp.check(regex, input)
     }
     False -> False

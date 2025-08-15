@@ -6,6 +6,7 @@ import gleam/result
 import gleam/string
 import gleam/option.{Some}
 import simplifile
+import libraries/regexlib
 
 // Path to the Conway official file
 const conwayofficial_file_path = "./src/resources/other/codepoint-character-sequence.txt"
@@ -91,7 +92,7 @@ fn parse_conway_files() -> Result(Dict(String, String), String) {
     Ok(content) -> {
       // Compile regex for valid lines: Unicode code point, character, stroke sequence
       let assert Ok(re) = regexp.from_string(
-      "^U\\+[0-9A-F]{4,6}\\s+([\\x{2E7F}-\\x{10FFFF}][*^]?)\\s+([0-9|()]+)(?:\\s*.*)?$",
+      regexlib.regex_parse_conway,
       )
 
       // Process lines

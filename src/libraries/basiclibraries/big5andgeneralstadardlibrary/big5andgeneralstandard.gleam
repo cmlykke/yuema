@@ -7,7 +7,7 @@ import libraries/util/utilcollections.{type CharacterCollection, Collections}
 import gleam/io
 import gleam/set.{type Set}
 import gleam/int
-
+import libraries/regexlib
 
 // Paths to the text files
 const big5_file_path = "./src/resources/other/Big5_wikilink.txt"
@@ -18,8 +18,8 @@ const generalstandard_file_path = "./src/resources/other/github_jaywcjlove_gener
 const tzai2006_file_path = "./src/resources/other/Tzai2006.txt"
 
 fn characterreg() -> regexp.Regexp {
-  let regex_pattern = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
-  let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
+
+  let assert Ok(regex) = regexp.compile(regexlib.regex_big5, regexp.Options(case_insensitive: False, multi_line: False))
   regex
 }
 

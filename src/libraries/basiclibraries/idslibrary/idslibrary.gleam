@@ -60,18 +60,3 @@ fn parse_file_to_list(file_path: String) -> Dict(String, String) {
     Error(_) -> dict.new()
   }
 }
-
-
-
-//const cjkvi_ids = "./src/resources/other/ids.txt"
-
-//pub fn cjkvi_ids_map() -> List(String) {
-//  parse_file_to_list(cjkvi_ids, myregex())
-//}
-
-//fn myregex() -> regexp.Regexp {
-//  let regex_pattern = "[\\x{80}-\\x{D7FF}\\x{E000}-\\x{10FFFF}]"
-//  let assert Ok(regex) = regexp.compile(regex_pattern, regexp.Options(case_insensitive: False, multi_line: False))
-//  regex
-//}
-

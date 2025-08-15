@@ -12,12 +12,12 @@ import gleam/int
 import gleam/option.{type Option, None, Some}
 import libraries/util/idsrecur.{type Idsrecur, type HanChar, type ShapeChar}
 import libraries/dataprocessing/idsandconway/createidsrecur
-
+import libraries/regexlib
 // Assuming necessary imports and types are already present
 
 pub fn is_enclosed_alphanumeric(h: HanChar) -> Bool {
   let s = idsrecur.hanchar_to_string(h)
-  let assert Ok(regex) = regexp.compile("[\\x{2460}-\\x{24FF}]", regexp.Options(case_insensitive: False, multi_line: False))
+  let assert Ok(regex) = regexp.compile(regexlib.regex_printtest_one, regexp.Options(case_insensitive: False, multi_line: False))
   regexp.check(regex, s)
 }
 
